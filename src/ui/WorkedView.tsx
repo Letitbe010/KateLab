@@ -73,11 +73,11 @@ export function WorkedItem({ id }: { id: string }) {
       <h1>{entry.title[lang]}</h1>
       <p className="statement">{ex.text[lang]}</p>
       {ex.asks.some((a) => a.label) && (
-        <ol className="ask-list" type="a">
+        <ul className="ask-list">
           {ex.asks.map((a, i) => (
             <li key={i}>{a.label?.[lang]}</li>
           ))}
-        </ol>
+        </ul>
       )}
       {cur && <KinematicSchema chain={ex.chain} state={cur.state} lang={lang} locked lit={cur.lit} speeds={cur.known} />}
 
