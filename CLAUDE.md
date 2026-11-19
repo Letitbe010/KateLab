@@ -1,0 +1,20 @@
+# KateLab – arau nagusiak
+- Zehaztasuna > dena. core/-n akats batek erabiltzailearen ikaskuntza hondatzen du.
+- Aritmetika: arrazional zehatzak (src/core/rational.ts); π sinbolikoki (coef·π^k) amaierara arte. k zenbaki oso txikia da (−1 barne: T = P/ω), ez 0|1 bakarrik.
+- Barne-unitateak: mm, min, rpm. Bihurketak (m/s, rad/s, kW) irteera-geruzan bakarrik.
+- Sarrera hamartarrak ("1,1") zuzenean arrazional bihurtzen dira, inoiz ez float bidez.
+- i = n_irteera / n_sarrera. Noranzkoa ardatz paraleloetan bakarrik, ikuspuntu finkotik. Torloju amaigabearen edo engranaje konikoaren ondoren noranzkoa "zehaztugabea" da, eta validate-k ez du onartzen `direction` eskaerarik han.
+- Bi ebazle independente (A: bide-biderketa; B: sistema lineala) + Python orakulua (sympy). Ez partekatu erlazio-funtziorik A eta B artean: model.ts eta rational.ts bakarrik. Bat ez badatoz → ariketa ez da erakusten.
+- Uhalaren irristatzea: n2 = n1·(D1/D2)·(1 − s) (erabiltzaileak baieztatua). Gurpilaren aldetik eragindako torloju amaigabea → ariketa baliogabea (erabiltzaileak baieztatua).
+- Multzo labainkorretan Z batura konstantea (modulu berarekin); bestela ariketa baliogabea.
+- Soluzio anitzeko eskaerak (zatiketa, aldaketa-gurpilak): murriztapenak egiaztatu, ez soluzio bakarra.
+- Plater zatitzaileen eta aldaketa-gurpilen multzoak ez dira "egiaztatutzat" jotzen erabiltzaileak iturriarekin baieztatu arte.
+- Kanpoko iturrien soluzioak ez dira inoiz egiatzat hartzen: beti berriz ebatzi.
+- Golden testak (tests/golden) ez dira inoiz aldatzen inplementazioari egokitzeko.
+- Zuzenketan ez da AArik erabiltzen. Teoriako eta ebatzietako zenbakiak ebazletik txertatzen dira.
+- UI elebiduna: eu (lehenetsia) / es. Terminologia: argibideen §13.3 (aitzinapena, zeharkako gurdia, gurpil-multzo labainkorra, torloju amaigabea...).
+- Estilo bisuala: Animazioak/kate-zinematikoa.html animazioaren paleta eta osagaiak (txartelak, alboko barra, potentzia-bidea laranjaz).
+- GitHub: biltegia `katelab`, publikoa, base `/katelab/`. Biltegia sortu edo push egin aurretik, erabiltzaileari baieztapena eskatu. Despliegea, CI berde badago soilik.
+- Lizentzia: kodea MIT; edukia CC BY-SA 4.0.
+- Fase bat ez da amaitutzat jotzen bere test guztiak berde egon arte.
+- Kodea, iruzkinak eta commit-mezuak ingelesez.
