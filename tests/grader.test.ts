@@ -266,11 +266,11 @@ describe('properties of the grader', () => {
         const shaft = c.shafts[pick % c.shafts.length]!.id;
         const e = { ...ex(j, [{ type: 'speed', shaft }]), state: st };
         const value = expectedValues(e, e.asks[0] as Ask)[0]!.value;
-        const r = g1(e, { value: R.toFixed(value.coef, 6) });
+        const r = g1(e, { value: R.toFixed(value.coef, 15) });
         expect(r.status).toBe('correct');
         expect(r.diagnoses).toEqual([]);
         const off = R.mul(value.coef, R.q(101, 100));
-        expect(g1(e, { value: R.toFixed(off, 6) }).status).toBe('wrong');
+        expect(g1(e, { value: R.toFixed(off, 15) }).status).toBe('wrong');
       }),
       { numRuns: 2000 },
     );
