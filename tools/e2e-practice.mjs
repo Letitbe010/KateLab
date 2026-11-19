@@ -4,7 +4,7 @@
 import { chromium } from 'playwright-core';
 import { mkdirSync } from 'node:fs';
 
-const base = process.argv[2] ?? 'http://localhost:5173/katelab/';
+const base = process.argv[2] ?? 'http://localhost:5173/KateLab/';
 const out = process.argv[3] ?? 'screenshots/e2e';
 mkdirSync(out, { recursive: true });
 const browser = await chromium.launch({ channel: 'msedge' }).catch(() => chromium.launch({ channel: 'chrome' }));

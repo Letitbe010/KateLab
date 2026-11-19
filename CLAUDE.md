@@ -17,7 +17,7 @@
 - Zuzenketan ez da AArik erabiltzen. Teoriako eta ebatzietako zenbakiak ebazletik txertatzen dira.
 - UI elebiduna: eu (lehenetsia) / es. Terminologia: argibideen §13.3 (aitzinapena, zeharkako gurdia, gurpil-multzo labainkorra, torloju amaigabea...).
 - Estilo bisuala: Animazioak/kate-zinematikoa.html animazioaren paleta eta osagaiak (txartelak, alboko barra, potentzia-bidea laranjaz).
-- GitHub: biltegia `katelab`, publikoa, base `/katelab/`. Biltegia sortu edo push egin aurretik, erabiltzaileari baieztapena eskatu. Despliegea, CI berde badago soilik.
+- GitHub: biltegia `Letitbe010/KateLab`, publikoa, base `/KateLab/` (maiuskulak!). Biltegia sortu edo push egin aurretik, erabiltzaileari baieztapena eskatu. Despliegea, CI berde badago soilik.
 - Lizentzia: kodea MIT; edukia CC BY-SA 4.0.
 - Sortzailea determinista da: (arketipoa, seed) → ariketa bera. Sortzailea nahita aldatzen bada, `src/data/pool/generated.json` birsortu (GEN_POOL=1) eta orakuluaren laginak (GEN_ORACLE_CASES=1).
 - Plater-multzoak: `src/data/plates.json` (B&S eta Cincinnati, iturriekin egiaztatuak eta erabiltzaileak onartuak 2026-11-19).

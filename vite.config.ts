@@ -2,9 +2,9 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// GitHub Pages serves the app from /katelab/ (repository name).
+// GitHub Pages serves the app from /KateLab/ (repository name, case-sensitive).
 export default defineConfig({
-  base: '/katelab/',
+  base: '/KateLab/',
   plugins: [react()],
   test: {
     globals: true,

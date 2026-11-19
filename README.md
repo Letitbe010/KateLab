@@ -46,4 +46,4 @@ npm run oracle
 
 Kodea: MIT. Edukia (teoria, ariketak, irudiak): CC BY-SA 4.0. Ikus `LICENSE`.
 
-URL (argitaratu ondoren): `https://<erabiltzailea>.github.io/katelab/`
+URL: https://letitbe010.github.io/KateLab/
