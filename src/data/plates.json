@@ -1,5 +1,5 @@
 {
-  "_comment": "Hole circles of standard index plates for simple indexing (K = 40). Checked on 2026-11-19 against the sources below; pending the user's approval (spec §3, §10.4).",
+  "_comment": "Hole circles of standard index plates for simple indexing (K = 40). Checked on 2026-11-19 against the sources below; approved by the user on 2026-11-19 (spec §3, §10.4).",
   "sets": [
     {
       "id": "brown-sharpe",
