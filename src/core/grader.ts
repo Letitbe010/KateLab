@@ -35,7 +35,7 @@ import {
   toString as rs,
 } from './rational';
 import { solveStateB } from './solverLinear';
-import { solveStateA } from './solverPath';
+import { maxFeedPerRevA, solveStateA, speedTableA } from './solverPath';
 import { topology, validateChain } from './validate';
 
 // ---------------------------------------------------------------------------
@@ -195,13 +195,15 @@ export function fmt(v: PiRational, d = 2): string {
 /**
  * Tolerance §8.1: relative error ≤ 0,5 %, OR the answer equals the exact result
  * rounded to 2 decimals, OR (rpm) equals it rounded to the unit.
+ * The 2-decimal rule applies only when |expected| ≥ 1 in the chosen unit (user's
+ * decision, 2026-11-19): below 1 it would accept nonsense (0,00278 m/s → "0").
  */
 export function numMatch(given: Rational, expected: PiRational, unit: Unit = ''): boolean {
   const e = prToNumber(expected);
   const g = toNumber(given);
   if (e === 0) return g === 0;
   if (Math.abs(g - e) / Math.abs(e) <= 0.005) return true;
-  if (eq(given, parse(decimals(expected, 2)))) return true;
+  if (Math.abs(e) >= 1 && eq(given, parse(decimals(expected, 2)))) return true;
   if (unit === 'rpm' && eq(given, parse(decimals(expected, 0)))) return true;
   return false;
 }
@@ -350,7 +352,27 @@ const feed = (c: Chain, s: State, out: string, spindle: string): PiRational | nu
   return v && n ? prDiv(v.v, pr(n.n)) : null;
 };
 
+/** Unit mix-ups on the final value, expressed in the base unit (§8.3 items 6 and 8). */
+function unitAlternatives(ex: KinExercise, ask: Ask, sp: NumericSpec): Alt[] {
+  const v = sp.expected;
+  const out: Alt[] = [];
+  if (sp.base === 'rpm') {
+    out.push({ code: 'rpm-rads', value: pr(div(v.coef, q(30)), v.piPower + 1) }); // rad/s value typed as rpm
+    out.push({ code: 'rpm-rads', value: pr(mul(v.coef, q(30)), v.piPower - 1) }); // rpm value typed as rad/s
+  }
+  if (sp.base === 'mm/min' || sp.base === 'mm') {
+    for (const k of [q(1000), q(1, 1000), q(60000), q(1, 60000)]) out.push({ code: 'mm-m', value: prScale(v, k) });
+    const drive = 'output' in ask ? activeElements(ex.chain, stateOf(ex)).find((e) => 'output' in e && e.output === ask.output) : undefined;
+    if (drive?.kind === 'rack') for (const k of [q(60), q(1, 60)]) out.push({ code: 'rack-no-60', value: prScale(v, k) });
+  }
+  return out;
+}
+
 function numericSpecs(ex: KinExercise, ask: Ask): NumericSpec[] {
+  return rawSpecs(ex, ask).map((sp) => ({ ...sp, alts: [...sp.alts, ...unitAlternatives(ex, ask, sp)] }));
+}
+
+function rawSpecs(ex: KinExercise, ask: Ask): NumericSpec[] {
   const chain = ex.chain;
   const st = stateOf(ex);
   switch (ask.type) {
@@ -367,11 +389,12 @@ function numericSpecs(ex: KinExercise, ask: Ask): NumericSpec[] {
       return [{ field: 'value', expected: pr(n.n), base: 'rpm', alts }];
     }
     case 'speedMaxMin': {
-      const rows = allStates(chain).map((s) => ({ s, n: solve(chain, s).shafts[ask.shaft] }));
-      const ns = rows.filter((r) => r.n).map((r) => r.n!.n);
-      if (!ns.length) throw new ExerciseError('shaft never driven');
-      const max = ns.reduce((a, b) => (toNumber(b) > toNumber(a) ? b : a));
-      const min = ns.reduce((a, b) => (toNumber(b) < toNumber(a) ? b : a));
+      for (const s of allStates(chain)) solve(chain, s); // A = B on every state
+      const table = speedTableA(chain, ask.shaft);
+      if (!table.rows.length) throw new ExerciseError('shaft never driven');
+      const ns = table.rows.map((r) => r.n);
+      const max = table.distinct[table.distinct.length - 1] as Rational;
+      const min = table.distinct[0] as Rational;
       // local extremes: any other combination's speed
       const others = (v: Rational): Alt[] => ns.filter((x) => !eq(x, v)).map((x) => ({ code: 'local-max' as const, value: pr(x) }));
       return [
@@ -423,14 +446,10 @@ function numericSpecs(ex: KinExercise, ask: Ask): NumericSpec[] {
     }
     case 'feedPerRev': {
       if (ask.max) {
-        const rows = allStates(chain)
-          .map((s) => ({ s, f: feed(chain, s, ask.output, ask.spindle) }))
-          .filter((r): r is { s: State; f: PiRational } => !!r.f);
-        for (const r of rows) solve(chain, r.s); // A = B on every state
-        if (!rows.length) throw new ExerciseError('feed never defined');
-        let best = rows[0] as { s: State; f: PiRational };
-        for (const r of rows) if (prToNumber(r.f) > prToNumber(best.f)) best = r;
-        const alts: Alt[] = rows.filter((r) => !prEq(r.f, best.f)).map((r) => ({ code: 'local-max', value: r.f, detail: { state: JSON.stringify(r.s) } }));
+        for (const s of allStates(chain)) solve(chain, s); // A = B on every state
+        const m = maxFeedPerRevA(chain, ask.output, ask.spindle); // exact comparison
+        const best = { s: m.at[0] as State, f: m.max };
+        const alts: Alt[] = m.rows.filter((r) => !prEq(r.f, best.f)).map((r) => ({ code: 'local-max', value: r.f, detail: { state: JSON.stringify(r.state) } }));
         const v = linV(chain, best.s, ask.output);
         if (v) alts.push({ code: 'feed-units', value: v });
         for (const e of activeElements(chain, best.s))
@@ -523,6 +542,8 @@ function gradeNumeric(ex: KinExercise, ask: Ask, ans: AskAnswer): AskResult {
   const specs = numericSpecs(ex, ask);
   const unit = (ans.unit as Unit | undefined) ?? unitsFor(ask)[0] ?? '';
   const fields: FieldResult[] = [];
+  if (!unitsFor(ask).includes(unit) && !(ask.type === 'torquePower' && !ans.unit))
+    return { ask, status: 'invalid', fields: specs.map((sp) => ({ field: sp.field, status: 'invalid' as const, ...(ans[sp.field] ? { given: ans[sp.field] } : {}) })), diagnoses: [] };
   const diagnoses: Diagnosis[] = [];
   for (const sp of specs) {
     const raw = ans[sp.field];
@@ -539,18 +560,6 @@ function gradeNumeric(ex: KinExercise, ask: Ask, ans: AskAnswer): AskResult {
       for (const a of sp.alts) {
         if (prEq(a.value, sp.expected)) continue; // indistinguishable: never blame
         if (numMatch(g, convert(a.value, sp.base, shownUnit), shownUnit)) found.push({ code: a.code, ...(a.detail ? { detail: a.detail } : {}) });
-      }
-      // unit confusions on the final value
-      if (sp.base === 'rpm') {
-        const other: Unit = shownUnit === 'rpm' ? 'rad/s' : 'rpm';
-        if (numMatch(g, convert(sp.expected, 'rpm', other), other)) found.push({ code: 'rpm-rads' });
-      }
-      if (sp.base === 'mm/min' || sp.base === 'mm') {
-        const v = exp;
-        for (const k of [q(1000), q(1, 1000), q(60000), q(1, 60000)])
-          if (numMatch(g, prScale(v, k), shownUnit)) found.push({ code: 'mm-m' });
-        const drive = 'output' in ask ? activeElements(ex.chain, stateOf(ex)).find((e) => 'output' in e && e.output === ask.output) : undefined;
-        if (drive?.kind === 'rack') for (const k of [q(60), q(1, 60)]) if (numMatch(g, prScale(v, k), shownUnit)) found.push({ code: 'rack-no-60' });
       }
       diagnoses.push(...(found.length ? found : [{ code: 'unknown' as const }]));
     }
@@ -727,6 +736,8 @@ export function grade(ex: KinExercise, answers: AskAnswer[]): GradeResult {
 export function diagnosticCollisions(ex: KinExercise): { ask: number; field: string; code: DiagCode }[] {
   const out: { ask: number; field: string; code: DiagCode }[] = [];
   ex.asks.forEach((a, i) => {
+    if (a.type === 'indexing' && a.N === (ex.data?.K ?? 40)) out.push({ ask: i, field: 'turns', code: 'indexing-inverted' });
+    if (a.type === 'changeGears' && eq(requiredRatio(a.threadPitch, a.leadScrewPitch), ONE)) out.push({ ask: i, field: 'za', code: 'inverse-all' });
     for (const sp of numericSpecs(ex, a))
       for (const alt of sp.alts) if (numMatch(parse(decimals(alt.value, 6)), sp.expected)) out.push({ ask: i, field: sp.field, code: alt.code });
   });

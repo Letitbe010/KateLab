@@ -35,10 +35,12 @@ describe('tolerance §8.1', () => {
     expect(numMatch(R.parse('792'), e, 'rpm')).toBe(true); // 0,43 %
     expect(numMatch(R.parse('790'), e, 'rpm')).toBe(false); // 0,69 %
   });
-  it('equal to the result rounded to 2 decimals, even if the relative error is larger', () => {
+  it('2-decimal rounding rule only for |value| ≥ 1 (user decision): small values need 0,5 %', () => {
     const small = R.pr(R.q(3, 25), 1); // 0,12π = 0,37699 m/s
-    expect(numMatch(R.parse('0,38'), small)).toBe(true);
-    expect(numMatch(R.parse('0,37'), small)).toBe(false);
+    expect(numMatch(R.parse('0,377'), small)).toBe(true);
+    expect(numMatch(R.parse('0,38'), small)).toBe(false); // 0,8 % off
+    expect(numMatch(R.parse('0'), R.pr(R.q(1, 360)))).toBe(false); // 0,00278 → "0" no longer accepted
+    expect(numMatch(R.parse('0,01'), R.pr(R.q(63, 10000)))).toBe(false);
   });
   it('rpm rounded to the unit', () => {
     expect(numMatch(R.parse('795'), e, 'rpm')).toBe(true);
@@ -83,7 +85,8 @@ describe('correct answers get 100 %', () => {
   });
   it('KG4: rack speed in m/s and mm/min', () => {
     const e = ex(G('KG4'), [{ type: 'linearSpeed', output: 'R', unit: 'm/s' }]);
-    for (const v of ['0,377', '0,3770', '0,38']) expect(g1(e, { value: v, unit: 'm/s' }).status).toBe('correct');
+    for (const v of ['0,377', '0,3770', '0,3775']) expect(g1(e, { value: v, unit: 'm/s' }).status).toBe('correct');
+    expect(g1(e, { value: '0,38', unit: 'm/s' }).status).toBe('wrong');
     expect(g1(e, { value: '22619', unit: 'mm/min' }).status).toBe('correct');
   });
   it('KG5, KG6, KG8, KG10', () => {
@@ -107,6 +110,13 @@ describe('correct answers get 100 %', () => {
     expect(g1(c, { value: '166,67' }).status).toBe('correct');
     const d = ex(FRESA, [{ type: 'centerDistance', cluster: 'B' }]);
     expect(g1(d, { value: '64' }).status).toBe('correct');
+    // c) in m/s: 1/360 m/s; "0" must not pass
+    expect(g1(c, { value: '0,002778', unit: 'm/s' }).status).toBe('correct');
+    expect(g1(c, { value: '0', unit: 'm/s' }).status).toBe('wrong');
+  });
+  it('a unit the ask does not offer is an invalid answer', () => {
+    const e = ex(G('KG1'), [{ type: 'speed', shaft: 'III' }]);
+    expect(g1(e, { value: '360', unit: 'm/s' }).status).toBe('invalid');
   });
   it('gear geometry m = 2, Z = 20', () => {
     const j: ChainJSON = { ...G('KG1'), elements: [{ kind: 'gear', id: 'g12', from: 'I', to: 'II', z1: 20, z2: 40, module: '2' }, (G('KG1').elements[1] as never)] };

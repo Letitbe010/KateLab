@@ -10,6 +10,7 @@
 - Soluzio anitzeko eskaerak (zatiketa, aldaketa-gurpilak): murriztapenak egiaztatu, ez soluzio bakarra.
 - Plater zatitzaileen multzoak ez dira "egiaztatutzat" jotzen erabiltzaileak iturriarekin baieztatu arte.
 - Aldaketa-gurpilak (erabiltzaileak baieztatua, 2026-11-19): multzo lehenetsia 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 110, 120, 127 (bakoitza behin); muntaketa-baldintza Za + Zb > Zc + 15 eta Zc + Zd > Zb + 15.
+- Tolerantzia (§8.1, erabiltzailearen erabakia 2026-11-19): %0,5 errore erlatiboa; "2 hamartarrera biribilduta" araua |balioa| ≥ 1 denean bakarrik; rpm-etan unitatera biribiltzea onartua.
 - Zatiketa: zuloak ≥ zirkulua (adib. 0 + 30/18) → okerra, azalpenarekin (erabiltzaileak baieztatua).
 - Kanpoko iturrien soluzioak ez dira inoiz egiatzat hartzen: beti berriz ebatzi.
 - Golden testak (tests/golden) ez dira inoiz aldatzen inplementazioari egokitzeko.
