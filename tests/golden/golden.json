@@ -1,0 +1,152 @@
+{
+  "_comment": "Golden cases KG1-KG10, copied by hand from the specification (KateLab_argibideak.md, section 11.2). NEVER change an expected value to match the implementation. Exact values are strings ('1/4', '3/25·π'); 'approx' values are given to the decimals stated in the spec. Units: rpm, mm, mm/min unless the key says otherwise. Direction 'same'/'opposite' is relative to the input shaft.",
+  "cases": [
+    {
+      "id": "KG1",
+      "title": "Two-stage gear train",
+      "chain": {
+        "shafts": [{ "id": "I", "label": "I" }, { "id": "II", "label": "II" }, { "id": "III", "label": "III" }],
+        "elements": [
+          { "kind": "gear", "id": "g12", "from": "I", "to": "II", "z1": 20, "z2": 40 },
+          { "kind": "gear", "id": "g23", "from": "II", "to": "III", "z1": 25, "z2": 50 }
+        ],
+        "input": { "shaft": "I", "n": "1440" }
+      },
+      "states": [
+        {
+          "state": {},
+          "speeds": { "II": "720", "III": "360" },
+          "directions": { "III": "same" },
+          "ratios": [{ "from": "I", "to": "III", "value": "1/4" }]
+        }
+      ]
+    },
+    {
+      "id": "KG2",
+      "title": "Idler gear",
+      "chain": {
+        "shafts": [{ "id": "1", "label": "1" }, { "id": "2", "label": "2 (idler)" }, { "id": "3", "label": "3" }],
+        "elements": [
+          { "kind": "gear", "id": "g12", "from": "1", "to": "2", "z1": 20, "z2": 35 },
+          { "kind": "gear", "id": "g23", "from": "2", "to": "3", "z1": 35, "z2": 40 }
+        ],
+        "input": { "shaft": "1", "n": "1000" }
+      },
+      "states": [{ "state": {}, "speeds": { "3": "500" }, "directions": { "3": "same" } }]
+    },
+    {
+      "id": "KG3",
+      "title": "3-speed box, one sliding cluster, m = 2",
+      "chain": {
+        "shafts": [{ "id": "I", "label": "I" }, { "id": "II", "label": "II" }],
+        "elements": [
+          { "kind": "gear", "id": "a", "from": "I", "to": "II", "z1": 20, "z2": 60, "module": "2" },
+          { "kind": "gear", "id": "b", "from": "I", "to": "II", "z1": 30, "z2": 50, "module": "2" },
+          { "kind": "gear", "id": "c", "from": "I", "to": "II", "z1": 40, "z2": 40, "module": "2" }
+        ],
+        "clusters": [{ "id": "K", "label": "K", "options": ["a", "b", "c"] }],
+        "input": { "shaft": "I", "n": "1200" }
+      },
+      "speedSet": { "shaft": "II", "values": ["400", "720", "1200"] },
+      "centerDistance": { "cluster": "K", "value": "80" }
+    },
+    {
+      "id": "KG4",
+      "title": "Pinion and rack",
+      "chain": {
+        "shafts": [{ "id": "P", "label": "pinion" }],
+        "linear": [{ "id": "R", "label": "rack" }],
+        "elements": [{ "kind": "rack", "id": "pr", "from": "P", "output": "R", "z": 20, "module": "3" }],
+        "input": { "shaft": "P", "n": "120" }
+      },
+      "pitchDiameter": { "element": "pr", "value": "60" },
+      "states": [{ "state": {}, "linear_m_per_s": { "R": { "exact": "3/25·π", "approx": "0.377", "decimals": 3 } } }]
+    },
+    {
+      "id": "KG5",
+      "title": "Lead screw: P = 5 mm, 1 start, n_screw = 60 rpm; spindle at 300 rpm",
+      "_modelling": "The spec gives only n_screw = 60 rpm and n_spindle = 300 rpm; the 20/100 gear between them is modelling, chosen to reproduce exactly those two speeds.",
+      "chain": {
+        "shafts": [{ "id": "SP", "label": "spindle" }, { "id": "S", "label": "lead screw" }],
+        "linear": [{ "id": "T", "label": "table" }],
+        "elements": [
+          { "kind": "gear", "id": "g", "from": "SP", "to": "S", "z1": 20, "z2": 100 },
+          { "kind": "screw", "id": "sc", "from": "S", "output": "T", "pitch": "5", "starts": 1 }
+        ],
+        "input": { "shaft": "SP", "n": "300" }
+      },
+      "states": [
+        {
+          "state": {},
+          "speeds": { "S": "60" },
+          "linear_mm_per_min": { "T": "300" },
+          "feedPerRev": [{ "output": "T", "spindle": "SP", "value": "1" }]
+        }
+      ]
+    },
+    {
+      "id": "KG6",
+      "title": "Worm: 1 start, Z = 40, n_worm = 1400 rpm",
+      "chain": {
+        "shafts": [{ "id": "W", "label": "worm" }, { "id": "G", "label": "wheel" }],
+        "elements": [{ "kind": "worm", "id": "w", "from": "W", "to": "G", "starts": 1, "z": 40 }],
+        "input": { "shaft": "W", "n": "1400" }
+      },
+      "states": [{ "state": {}, "speeds": { "G": "35" } }]
+    },
+    {
+      "id": "KG7",
+      "title": "Simple indexing, K = 40, N = 24",
+      "_plates": "Plate set below is the commonly cited Brown & Sharpe set (spec §10.4). NOT verified against a primary source yet; used here only as test data.",
+      "indexing": {
+        "K": 40,
+        "N": 24,
+        "plates": [[15, 16, 17, 18, 19, 20], [21, 23, 27, 29, 31, 33], [37, 39, 41, 43, 47, 49]],
+        "turns": "1",
+        "fraction": "2/3",
+        "valid": [
+          { "turns": 1, "holes": 12, "circle": 18 },
+          { "turns": 1, "holes": 10, "circle": 15 },
+          { "turns": 1, "holes": 14, "circle": 21 }
+        ],
+        "invalid": [
+          { "turns": 1, "holes": 10, "circle": 16, "_why": "16 is not a multiple of 3" },
+          { "turns": 0, "holes": 24, "circle": 40, "_why": "N/K instead of K/N, and 40 is not on the plates" },
+          { "turns": 1, "holes": 20, "circle": 30, "_why": "30 is not on the plates" }
+        ]
+      }
+    },
+    {
+      "id": "KG8",
+      "title": "Belt: D1 = 100 mm at 1500 rpm, D2 = 250 mm",
+      "chain": {
+        "shafts": [{ "id": "1", "label": "1" }, { "id": "2", "label": "2" }],
+        "elements": [{ "kind": "belt", "id": "u", "from": "1", "to": "2", "d1": "100", "d2": "250" }],
+        "input": { "shaft": "1", "n": "1500" }
+      },
+      "states": [{ "state": {}, "speeds": { "2": "600" } }]
+    },
+    {
+      "id": "KG9",
+      "title": "Change gears: lead screw 6 mm, thread 1.5 mm, spindle:screw = 1:1",
+      "_gearset": "Gear set below is illustrative test data, NOT the user's lathe set (to be confirmed).",
+      "changeGears": {
+        "threadPitch": "1,5",
+        "leadScrewPitch": "6",
+        "ratio": "1/4",
+        "gearSet": [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 110, 120, 127],
+        "valid": [{ "za": 20, "zb": 40, "zc": 30, "zd": 60 }]
+      }
+    },
+    {
+      "id": "KG10",
+      "title": "Power and torque: P = 1.1 kW, n = 320 rpm",
+      "chain": {
+        "shafts": [{ "id": "A", "label": "shaft" }],
+        "elements": [],
+        "input": { "shaft": "A", "n": "320", "power": "1100" }
+      },
+      "power": { "shaft": "A", "omega_rad_s": { "approx": "33.51", "decimals": 2 }, "torque_Nm": { "approx": "32.83", "decimals": 2 } }
+    }
+  ]
+}

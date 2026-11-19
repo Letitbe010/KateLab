@@ -1,0 +1,55 @@
+{
+  "_comment": "Euskadi OPE 2020, 1508, exercise 3 (milling machine). Data taken from the user's own animation Animazioak/kate-zinematikoa.html (user-built and user-checked). Regression test, separate from the spec goldens. Expected values: a) 795.45 rpm, b) 0.926 mm/rev, c) 166.67 mm/min, d) 64 mm (as published in that animation).",
+  "chain": {
+    "shafts": [
+      { "id": "M", "label": "motor" },
+      { "id": "I", "label": "I" },
+      { "id": "II", "label": "II" },
+      { "id": "III", "label": "III (ardatz nagusia)" },
+      { "id": "IV", "label": "IV" },
+      { "id": "P", "label": "Ø15 pulley shaft" },
+      { "id": "Q", "label": "after cardan" },
+      { "id": "VT", "label": "worm shaft" },
+      { "id": "V", "label": "V" },
+      { "id": "S1", "label": "cross-slide screw" },
+      { "id": "VZ", "label": "vertical shaft" },
+      { "id": "S2", "label": "table screw" }
+    ],
+    "linear": [
+      { "id": "CROSS", "label": "zeharkako gurdia" },
+      { "id": "TABLE", "label": "mahaia" }
+    ],
+    "elements": [
+      { "kind": "belt", "id": "bM", "from": "M", "to": "I", "d1": "100", "d2": "360" },
+      { "kind": "gear", "id": "A0", "from": "I", "to": "II", "z1": 35, "z2": 35 },
+      { "kind": "gear", "id": "A1", "from": "I", "to": "II", "z1": 20, "z2": 50 },
+      { "kind": "gear", "id": "A2", "from": "I", "to": "II", "z1": 30, "z2": 40 },
+      { "kind": "gear", "id": "B0", "from": "II", "to": "III", "z1": 24, "z2": 40, "module": "2" },
+      { "kind": "gear", "id": "B1", "from": "II", "to": "III", "z1": 42, "z2": 22, "module": "2" },
+      { "kind": "gear", "id": "C0", "from": "I", "to": "IV", "z1": 20, "z2": 40 },
+      { "kind": "gear", "id": "C1", "from": "I", "to": "IV", "z1": 40, "z2": 20 },
+      { "kind": "gear", "id": "C2", "from": "I", "to": "IV", "z1": 30, "z2": 30 },
+      { "kind": "belt", "id": "b15", "from": "IV", "to": "P", "d1": "15", "d2": "15" },
+      { "kind": "clutch", "id": "cardan", "from": "P", "to": "Q" },
+      { "kind": "bevel", "id": "b1718", "from": "Q", "to": "VT", "z1": 20, "z2": 20 },
+      { "kind": "worm", "id": "w19", "from": "VT", "to": "V", "starts": 1, "z": 30 },
+      { "kind": "gear", "id": "g2021", "from": "V", "to": "S1", "z1": 30, "z2": 25 },
+      { "kind": "screw", "id": "sc1", "from": "S1", "output": "CROSS", "pitch": "5", "starts": 1 },
+      { "kind": "bevel", "id": "b2223", "from": "V", "to": "VZ", "z1": 20, "z2": 20 },
+      { "kind": "bevel", "id": "b2425", "from": "VZ", "to": "S2", "z1": 20, "z2": 30 },
+      { "kind": "screw", "id": "sc2", "from": "S2", "output": "TABLE", "pitch": "5", "starts": 1 }
+    ],
+    "clusters": [
+      { "id": "A", "label": "Z1/Z2/Z3", "options": ["A0", "A1", "A2"] },
+      { "id": "B", "label": "Z15/Z16", "options": ["B0", "B1"] },
+      { "id": "C", "label": "Z7/Z8/Z9", "options": ["C0", "C1", "C2"] }
+    ],
+    "input": { "shaft": "M", "n": "1500" }
+  },
+  "expect": {
+    "a": { "state": { "A": "A0", "B": "B1", "C": "C1" }, "shaft": "III", "value": "8750/11", "approx": "795.45" },
+    "b": { "output": "TABLE", "spindle": "III", "max": "25/27", "approx": "0.926", "argmax": { "A": "A1", "B": "B0", "C": "C1" } },
+    "c": { "state": { "A": "A1", "B": "B1", "C": "C1" }, "output": "CROSS", "value": "500/3", "approx": "166.67" },
+    "d": { "cluster": "B", "value": "64" }
+  }
+}
