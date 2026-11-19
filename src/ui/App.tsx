@@ -5,6 +5,7 @@ import { PracticeHome } from './PracticeHome';
 import { type Route, hrefOf, useRoute } from './router';
 import { SchemaGallery } from './SchemaGallery';
 import { WorkedItem, WorkedList } from './WorkedView';
+import { TheoryList, TheoryTopic } from './theory/TheoryView';
 
 const LANG_KEY = 'katelab.lang';
 
@@ -18,14 +19,22 @@ function loadLang(): Lang {
 }
 
 const NAV: { key: string; route: Route; icon: string }[] = [
-  { key: 'nav.theory', route: { name: 'soon', section: 'teoria' }, icon: 'T' },
+  { key: 'nav.theory', route: { name: 'theory' }, icon: 'T' },
   { key: 'nav.worked', route: { name: 'worked' }, icon: 'E' },
   { key: 'nav.practice', route: { name: 'home' }, icon: 'P' },
   { key: 'nav.progress', route: { name: 'soon', section: 'aurrerapena' }, icon: 'A' },
 ];
 
 const sectionOf = (r: Route): string =>
-  r.name === 'soon' ? r.section : r.name === 'schemas' ? 'eskemak' : r.name === 'worked' || r.name === 'workedItem' ? 'ebatziak' : 'praktika';
+  r.name === 'soon'
+    ? r.section
+    : r.name === 'schemas'
+      ? 'eskemak'
+      : r.name === 'worked' || r.name === 'workedItem'
+        ? 'ebatziak'
+        : r.name === 'theory' || r.name === 'theoryTopic'
+          ? 'teoria'
+          : 'praktika';
 
 export function App() {
   const [lang, setLang] = useState<Lang>(loadLang);
@@ -83,6 +92,8 @@ export function App() {
             {route.name === 'generated' && <PracticeExercise key={`${route.archetype}-${route.seed}`} source={{ kind: 'generated', archetype: route.archetype, seed: route.seed }} />}
             {route.name === 'pool' && <PracticeExercise key={route.id} source={{ kind: 'pool', id: route.id }} />}
             {route.name === 'schemas' && <SchemaGallery lang={lang} />}
+            {route.name === 'theory' && <TheoryList />}
+            {route.name === 'theoryTopic' && <TheoryTopic key={route.id} id={route.id} />}
             {route.name === 'worked' && <WorkedList />}
             {route.name === 'workedItem' && <WorkedItem key={route.id} id={route.id} />}
             {route.name === 'soon' && (

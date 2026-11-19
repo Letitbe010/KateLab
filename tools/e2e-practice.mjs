@@ -111,6 +111,29 @@ for (const h of wl) {
 }
 await w.close();
 
+// theory: every topic opens without errors, formulas rendered by KaTeX, widgets present
+const th = await browser.newPage({ viewport: { width: 390, height: 844 } });
+const therr = [];
+th.on('pageerror', (e) => therr.push(e.message));
+await th.goto(base + '#/teoria');
+const tl = await th.locator('.topic-list a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+check(tl.length === 13, `theory list has 13 topics (${tl.length})`);
+for (const h of tl) {
+  await th.goto(base + h);
+  const tex = await th.locator('.katex').count();
+  const unfilled = (await th.locator('.theory').innerText()).includes('{{');
+  check(therr.length === 0 && !unfilled, `${h}: ${tex} formulas, examples filled${therr.length ? ' — ' + therr.join('; ') : ''}`);
+  if (h.endsWith('erlazioa')) {
+    check((await th.locator('.widget').count()) === 1, 'erlazioa: gears widget present');
+    await th.screenshot({ path: `${out}/eu_theory_erlazioa.png`, fullPage: true });
+  }
+  if (h.endsWith('kaxak')) {
+    await th.getByRole('button', { name: /Z?40/ }).first().click().catch(() => {});
+    await th.screenshot({ path: `${out}/eu_theory_kaxak.png`, fullPage: true });
+  }
+}
+await th.close();
+
 // desktop view of the home and of the milling exercise
 const d = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 await d.goto(base + '#/praktika');

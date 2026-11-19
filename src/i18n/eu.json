@@ -206,5 +206,9 @@
   "sol.rackP": "{output}: v = p·Z·n = {p} · {z} · {n} mm/min = {v} mm/min = {vs} m/s",
   "sol.pitchDiameter": "d = m·Z = {m} · {z} = {d} mm",
   "sol.pitchDiameterP": "m = p/π; d = m·Z = p·Z/π = {p} · {z} / π = {d} mm",
-  "wk.rackP.what": "d = p·Z/π = {p} · {z} / π = {d} mm; v = p·Z·n = {p} · {z} · {n} = {v} mm/min = {vs} m/s"
+  "wk.rackP.what": "d = p·Z/π = {p} · {z} / π = {d} mm; v = p·Z·n = {p} · {z} · {n} = {v} mm/min = {vs} m/s",
+  "th.lead": "Kontzeptuak eta zergatiak: nola kalkulatzen den, eta zergatik. Adibideetako zenbaki guztiak ebazleak kalkulatzen ditu.",
+  "th.example": "Adibidea",
+  "th.ope": "OPEan",
+  "th.see": "Teoria: {title} →"
 }

@@ -4,6 +4,7 @@
  *   #/praktika                           → practice home
  *   #/praktika/<archetype>/seed/<n>      → generated exercise
  *   #/praktika/pool/<id>                 → pool exercise
+ *   #/teoria, #/teoria/<id>              → theory
  *   #/ebatziak, #/ebatziak/<id>          → worked exercises
  *   #/eskemak                            → schema gallery (development)
  */
@@ -15,6 +16,8 @@ export type Route =
   | { name: 'pool'; id: string }
   | { name: 'schemas' }
   | { name: 'worked' }
+  | { name: 'theory' }
+  | { name: 'theoryTopic'; id: string }
   | { name: 'workedItem'; id: string }
   | { name: 'soon'; section: string };
 
@@ -25,7 +28,8 @@ export function parseHash(hash: string): Route {
   if (parts[0] === 'praktika' && parts[1] === 'pool' && parts[2]) return { name: 'pool', id: parts[2] };
   if (parts[0] === 'eskemak') return { name: 'schemas' };
   if (parts[0] === 'ebatziak') return parts[1] ? { name: 'workedItem', id: parts[1] } : { name: 'worked' };
-  if (parts[0] && ['teoria', 'aurrerapena'].includes(parts[0])) return { name: 'soon', section: parts[0] };
+  if (parts[0] === 'teoria') return parts[1] ? { name: 'theoryTopic', id: parts[1] } : { name: 'theory' };
+  if (parts[0] && ['aurrerapena'].includes(parts[0])) return { name: 'soon', section: parts[0] };
   return { name: 'home' };
 }
 
@@ -39,6 +43,10 @@ export const hrefOf = (r: Route): string => {
       return '#/eskemak';
     case 'worked':
       return '#/ebatziak';
+    case 'theory':
+      return '#/teoria';
+    case 'theoryTopic':
+      return `#/teoria/${encodeURIComponent(r.id)}`;
     case 'workedItem':
       return `#/ebatziak/${encodeURIComponent(r.id)}`;
     case 'soon':

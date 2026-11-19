@@ -21,5 +21,6 @@
 - Lizentzia: kodea MIT; edukia CC BY-SA 4.0.
 - Sortzailea determinista da: (arketipoa, seed) → ariketa bera. Sortzailea nahita aldatzen bada, `src/data/pool/generated.json` birsortu (GEN_POOL=1) eta orakuluaren laginak (GEN_ORACLE_CASES=1).
 - Plater-multzoak: `src/data/plates.json` (B&S eta Cincinnati, iturriekin egiaztatuak eta erabiltzaileak onartuak 2026-11-19).
+- Teoria: `src/content/theory/topics.ts` (TS egituratua, MDX-ren ordez); adibideetako zenbakiak `{{…}}` aldagaiekin (src/core/template.ts). Formula bakoitzak `check` bat du tests/theory.test.ts-n.
 - Fase bat ez da amaitutzat jotzen bere test guztiak berde egon arte.
 - Kodea, iruzkinak eta commit-mezuak ingelesez.

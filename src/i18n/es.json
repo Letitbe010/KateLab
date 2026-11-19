@@ -206,5 +206,9 @@
   "sol.rackP": "{output}: v = p·Z·n = {p} · {z} · {n} mm/min = {v} mm/min = {vs} m/s",
   "sol.pitchDiameter": "d = m·Z = {m} · {z} = {d} mm",
   "sol.pitchDiameterP": "m = p/π; d = m·Z = p·Z/π = {p} · {z} / π = {d} mm",
-  "wk.rackP.what": "d = p·Z/π = {p} · {z} / π = {d} mm; v = p·Z·n = {p} · {z} · {n} = {v} mm/min = {vs} m/s"
+  "wk.rackP.what": "d = p·Z/π = {p} · {z} / π = {d} mm; v = p·Z·n = {p} · {z} · {n} = {v} mm/min = {vs} m/s",
+  "th.lead": "Conceptos y porqués: cómo se calcula y por qué. Todos los números de los ejemplos los calcula el solver.",
+  "th.example": "Ejemplo",
+  "th.ope": "En la OPE",
+  "th.see": "Teoría: {title} →"
 }

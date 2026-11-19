@@ -10,6 +10,7 @@ import { useT } from '../i18n';
 import { KinematicSchema } from './KinematicSchema';
 import { hrefOf } from './router';
 import { buildWorked } from './worked';
+import { TOPICS } from '../content/theory/topics';
 
 export interface WorkedEntry {
   id: string;
@@ -113,6 +114,9 @@ export function WorkedItem({ id }: { id: string }) {
               <div className="layer why">
                 <span className="lab">{t('wk.why')}</span>
                 <p>{s.why}</p>
+                {s.topic && TOPICS.find((x) => x.id === s.topic) && (
+                  <a href={hrefOf({ name: 'theoryTopic', id: s.topic })}>{t('th.see', { title: TOPICS.find((x) => x.id === s.topic)!.title[lang] })}</a>
+                )}
               </div>
             )}
             {s.careful && (

@@ -27,6 +27,8 @@ export interface WStep {
   state: State;
   lit: string[];
   known: Record<string, string>;
+  /** Theory topic id for the "why" layer. */
+  topic?: string;
 }
 
 const KIND: Record<Lang, Record<Element['kind'], string>> = {
@@ -95,6 +97,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
         why: t(`wk.why.${e.kind}`),
         ...(careful ? { careful } : {}),
         state: st,
+        topic: e.kind === 'belt' || e.kind === 'chain' ? 'poleak' : e.kind === 'worm' ? 'torlojua' : e.kind === 'clutch' ? 'eskemak' : 'erlazioa',
       });
     }
   };
@@ -125,6 +128,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
           why: t('wk.res.ratio.why'),
           careful: t('wk.res.ratio.careful'),
           state: st,
+          topic: 'trenak',
         });
         break;
       }
@@ -140,7 +144,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
         const d = s.shafts[ask.shaft]!.dir;
         const inDir = ex.chain.input.direction;
         const res = inDir ? t(`dir.${d === 1 ? inDir : inDir === 'cw' ? 'ccw' : 'cw'}`) : t(`dir.${d === 1 ? 'same' : 'opposite'}`);
-        push({ key, title: t('wk.dir.title', { shaft: shaftName(ex, ask.shaft) }), what: [t('wk.dir.what', { count: flips, result: res })], why: t('wk.dir.why'), careful: t('wk.dir.careful'), state: st });
+        push({ key, title: t('wk.dir.title', { shaft: shaftName(ex, ask.shaft) }), what: [t('wk.dir.what', { count: flips, result: res })], why: t('wk.dir.why'), careful: t('wk.dir.careful'), state: st, topic: 'trenak' });
         break;
       }
       case 'linearSpeed':
@@ -155,6 +159,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
             title: t('wk.feedmax.title', { output: outputName(ex, lang, ask.output), spindle: shaftName(ex, ask.spindle) }),
             what: [t('wk.feedmax.what', { output: outputName(ex, lang, ask.output), spindle: shaftName(ex, ask.spindle), f: fmt(m.max, 4), state: stateText(ex, best) })],
             why: t('wk.feedmax.why'),
+            topic: 'aitzinapena',
             careful: t('wk.feedmax.careful'),
             table: { head: [t('sol.state'), 'mm/rev'], rows },
             state: best,
@@ -184,6 +189,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
             why: t('wk.rack.why'),
             careful: t('wk.rack.careful'),
             state: st,
+            topic: 'translazioa',
           });
         } else if (drive.kind === 'screw') {
           push({
@@ -193,6 +199,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
             why: t('wk.screw.why'),
             careful: t('wk.screw.careful'),
             state: st,
+            topic: 'translazioa',
           });
         }
         if (ask.type === 'feedPerRev') {
@@ -205,6 +212,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
             why: t('wk.feedrev.why'),
             careful: t('wk.feedrev.careful'),
             state: st,
+            topic: 'aitzinapena',
           });
         }
         break;
@@ -220,6 +228,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
           title: t('wk.table.title', { shaft: shaftName(ex, ask.shaft) }),
           what: [t('wk.table.what', { count: tb.distinct.length, max: n2(max), min: n2(min) })],
           why: t('wk.table.why'),
+          topic: 'kaxak',
           careful: t('wk.table.careful'),
           table: { head: [t('sol.state'), 'rpm'], rows: tb.rows.map((r) => ({ label: stateText(ex, r.state), value: n2(r.n), best: r.n === max || r.n === min || rs(r.n) === rs(max) || rs(r.n) === rs(min) })) },
           state: st,
@@ -254,6 +263,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
           careful: t('wk.centre.careful'),
           state: st,
           lit: [e.id],
+          topic: 'geometria',
         });
         break;
       }
@@ -271,6 +281,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
             ...(first ? [t('wk.index.what2', { den: f.fraction.d.toString(), holes: first.holes, circle: first.circle, list: sols.map((s) => `${s.turns} + ${s.holes}/${s.circle}`).join(' · ') })] : []),
           ],
           why: t('wk.index.why'),
+          topic: 'zatiketa',
           careful: t('wk.index.careful'),
           state: st,
         });
@@ -288,6 +299,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
             ...(tr ? [t('wk.gears.what2', { za: tr.za, zb: tr.zb, zc: tr.zc, zd: tr.zd, i: rs(mul(q(tr.za, tr.zb), q(tr.zc, tr.zd))), list: trains.slice(1, 7).map((x) => `${x.za}/${x.zb}·${x.zc}/${x.zd}`).join(' · ') })] : []),
           ],
           why: t('wk.gears.why'),
+          topic: 'aldaketa',
           careful: t('wk.gears.careful'),
           state: st,
         });
@@ -304,6 +316,7 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
           title: t('wk.power.title', { shaft: shaftName(ex, ask.shaft) }),
           what: [t('wk.power.what', { pin: n2(ex.chain.input.power ?? q(0)), eta: fmt(pr(p.etaPath), 4), p: n2(p.P), w: fmt(rpmToRadPerS(n), 2), t: fmt(p.T, 2) })],
           why: t('wk.power.why'),
+          topic: 'potentzia',
           careful: t('wk.power.careful'),
           state: st,
         });
