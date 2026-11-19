@@ -12,6 +12,7 @@
  * This module holds data shapes and plain helpers only. It deliberately contains
  * no transmission-ratio logic, so that solver A and solver B stay independent.
  */
+import type { SchemaLayout } from './layout';
 import { type PiRational, type Rational, from, toString } from './rational';
 
 export type ShaftId = string;
@@ -68,7 +69,7 @@ export interface Chain {
   input: ChainInput;
   efficiency?: Record<ElementId, Rational>;
   viewpoint?: { eu: string; es: string }; // e.g. "motorraren aldetik begiratuta"
-  layout?: unknown; // SchemaLayout, defined in phase 3
+  layout?: SchemaLayout; // hand-made schema layout (pool exercises); automatic if absent
 }
 
 /** Selected option per cluster. */
@@ -175,6 +176,7 @@ export interface ChainJSON {
   input: { shaft: string; n: Num; direction?: Direction; power?: Num };
   efficiency?: Record<string, Num>;
   viewpoint?: { eu: string; es: string };
+  layout?: SchemaLayout;
 }
 
 const R = (x: Num): Rational => from(typeof x === 'number' && !Number.isInteger(x) ? String(x) : x);
@@ -218,6 +220,7 @@ export function chainFromJSON(j: ChainJSON): Chain {
   };
   if (j.efficiency) chain.efficiency = Object.fromEntries(Object.entries(j.efficiency).map(([k, v]) => [k, R(v)]));
   if (j.viewpoint) chain.viewpoint = j.viewpoint;
+  if (j.layout) chain.layout = j.layout;
   return chain;
 }
 
@@ -244,5 +247,6 @@ export function chainToJSON(c: Chain): ChainJSON {
   if (c.linear && c.linear.length) j.linear = c.linear;
   if (c.efficiency) j.efficiency = Object.fromEntries(Object.entries(c.efficiency).map(([k, v]) => [k, toString(v)]));
   if (c.viewpoint) j.viewpoint = c.viewpoint;
+  if (c.layout) j.layout = c.layout;
   return j;
 }

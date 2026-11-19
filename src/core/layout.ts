@@ -10,16 +10,58 @@
 import type { Chain, Element, ElementId, LinearId, ShaftId } from './model';
 import { toNumber } from './rational';
 
+/**
+ * A shaft is a straight line: horizontal (o = 'h': y = c, x from a0 to a1) or
+ * vertical (o = 'v': x = c, y from a0 to a1).
+ */
+export interface ShaftLayout {
+  o: 'h' | 'v';
+  c: number;
+  a0: number;
+  a1: number;
+  row?: number;
+  /** Label position; null hides it. Default: left of a horizontal shaft. */
+  label?: { x: number; y: number; anchor?: 'start' | 'middle' | 'end' } | null;
+  /** Speed tag position (left-centre of the tag); null hides it. */
+  tag?: { x: number; y: number } | null;
+}
+
+/**
+ * Element placement.
+ *  - Both shafts parallel: `at` is the coordinate along the shafts (x for
+ *    horizontal shafts) where the pair sits; r1/r2 are the drawn radii.
+ *  - Shafts crossing (bevel, worm): the pair sits at the crossing point; `off`
+ *    moves each gear away from it along its own shaft (default 14).
+ *  - Screws: `at` is where the thread starts, `len` its length.
+ * n1/n2 are optional gear names (e.g. "Z4") shown instead of the bare numbers.
+ */
+export interface ElementLayout {
+  at: number;
+  r1: number;
+  r2: number;
+  n1?: string;
+  n2?: string;
+  off?: number;
+  len?: number;
+}
+
 export interface SchemaLayout {
   width: number;
   height: number;
-  shafts: Record<ShaftId, { y: number; x0: number; x1: number; row: number }>;
-  /** Column of each element; `r1`/`r2` are drawn radii on the from/to shafts. */
-  elements: Record<ElementId, { x: number; r1: number; r2: number }>;
+  /** Top-left corner of the view box (default 0, 0). */
+  origin?: { x: number; y: number };
+  shafts: Record<ShaftId, ShaftLayout>;
+  elements: Record<ElementId, ElementLayout>;
   linear: Record<LinearId, { x: number; y: number }>;
   motor: { x: number; y: number };
-  /** Cluster blocks: x-range of the sliding block, on which shaft it slides. */
-  clusters: Record<string, { x0: number; x1: number; shaft: ShaftId }>;
+  /** Sliding block: range along its shaft; `arrow` = cross coordinate of the double arrow (null: none). */
+  clusters: Record<string, { a0: number; a1: number; shaft: ShaftId; arrow?: number | null }>;
+  /** Free annotations. */
+  texts?: { x: number; y: number; eu: string; es: string; anchor?: 'start' | 'middle' | 'end' }[];
+  /** Hand-made layout (speed tags next to the shafts instead of a right-hand column). */
+  manual?: boolean;
+  /** With gear names (n1/n2): also print the tooth count under the name (default true). */
+  showTeeth?: boolean;
 }
 
 export const LAYOUT = {
@@ -182,12 +224,12 @@ export function autoLayout(chain: Chain): SchemaLayout {
           linear[e.output] = { x: x + 60, y: yOf(e.from) };
           break;
       }
-      elements[e.id] = { x, r1, r2 };
+      elements[e.id] = e.kind === 'screw' ? { at: x, r1, r2, len: 120 } : { at: x, r1, r2 };
     });
     if (isCluster) {
       const first = g[0] as Element;
       const slide = isLinearEl(first) ? first.from : first.to;
-      clusters[clusterOf.get(first.id) as string] = { x0: x0 - 12, x1: x + 12, shaft: slide };
+      clusters[clusterOf.get(first.id) as string] = { a0: x0 - 12, a1: x + 12, shaft: slide };
     }
     const last = g[g.length - 1] as Element;
     x +=
@@ -211,15 +253,15 @@ export function autoLayout(chain: Chain): SchemaLayout {
       const p = elements[e.id];
       if (!p) continue;
       if (e.from === s || (!isLinearEl(e) && e.to === s)) {
-        xs.push(p.x);
-        if (e.kind === 'screw' && e.from === s) xs.push(p.x + 120);
-        if (e.kind === 'rack' && e.from === s) xs.push(p.x + 20);
+        xs.push(p.at);
+        if (e.kind === 'screw' && e.from === s) xs.push(p.at + 120);
+        if (e.kind === 'rack' && e.from === s) xs.push(p.at + 20);
       }
     }
     const isInput = s === chain.input.shaft;
     const x0 = isInput ? L.marginLeft - 14 : Math.min(...xs, width) - 26;
     const x1 = Math.max(...xs, L.marginLeft) + 26;
-    shafts[s] = { y: yOf(s), x0: Math.min(x0, x1 - 40), x1, row: row.get(s) as number };
+    shafts[s] = { o: 'h', c: yOf(s), a0: Math.min(x0, x1 - 40), a1: x1, row: row.get(s) as number };
   }
   // vertical extents of everything drawn (gears above/below their shafts, cluster arrows, racks)
   let top = Infinity;
@@ -242,10 +284,45 @@ export function autoLayout(chain: Chain): SchemaLayout {
     bottom = Math.max(bottom, yOf(s) + 50);
   }
   const dy = 16 - top; // shift so that the topmost drawing sits 16 units below the edge
-  for (const s of Object.values(shafts)) s.y += dy;
+  for (const s of Object.values(shafts)) s.c += dy;
   for (const l of Object.values(linear)) l.y += dy;
   const height = bottom + dy + 16;
   return { width, height, shafts, elements, linear, clusters, motor: { x: L.marginLeft - 44, y: yOf(chain.input.shaft) + dy } };
+}
+
+/**
+ * Checks a hand-made layout against its chain: every shaft and element placed,
+ * crossing shafts only for bevel and worm pairs, crossing points inside both shafts.
+ * Returns a list of problems (empty = usable).
+ */
+export function checkLayout(chain: Chain, L: SchemaLayout): string[] {
+  const out: string[] = [];
+  for (const s of chain.shafts) if (!L.shafts[s.id]) out.push(`shaft ${s.id} not placed`);
+  for (const l of chain.linear ?? []) if (!L.linear[l.id]) out.push(`output ${l.id} not placed`);
+  for (const c of chain.clusters) if (!L.clusters[c.id]) out.push(`cluster ${c.id} not placed`);
+  const inside = (s: { a0: number; a1: number }, v: number) => v >= Math.min(s.a0, s.a1) && v <= Math.max(s.a0, s.a1);
+  for (const e of chain.elements) {
+    const p = L.elements[e.id];
+    if (!p) {
+      out.push(`element ${e.id} not placed`);
+      continue;
+    }
+    if (isLinearEl(e)) continue;
+    const a = L.shafts[e.from];
+    const b = L.shafts[e.to];
+    if (!a || !b) continue;
+    if (a.o !== b.o) {
+      if (e.kind !== 'bevel' && e.kind !== 'worm') out.push(`element ${e.id}: ${e.kind} cannot join crossing shafts`);
+      // bevel shafts stop just short of the crossing point: allow the gear offset plus a margin
+      const tol = (p.off ?? 14) + 16;
+      const [h, v] = a.o === 'h' ? [a, b] : [b, a];
+      const near = (s: { a0: number; a1: number }, x: number) => inside({ a0: Math.min(s.a0, s.a1) - tol, a1: Math.max(s.a0, s.a1) + tol }, x);
+      if (!near(h, v.c) || !near(v, h.c)) out.push(`element ${e.id}: shafts do not reach their crossing point`);
+    } else if (e.kind !== 'clutch' || a.c !== b.c) {
+      if (!inside(a, p.at) || !inside(b, p.at)) out.push(`element ${e.id}: position ${p.at} outside its shafts`);
+    }
+  }
+  return out;
 }
 
 /** Roman numerals for shaft labels (1 → I ... 20 → XX). */

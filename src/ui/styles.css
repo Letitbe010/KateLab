@@ -48,3 +48,7 @@ button.small { font-size: 14px; padding: 6px 12px; min-height: 44px; border-radi
 .schema-table th { background: var(--soft); font-weight: 600; }
 .card h1 { font-size: 23px; }
 @media (max-width: 600px) { .shell { padding: 10px; } .card { padding: 14px; } }
+
+.cluster-bar { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 4px 0 8px; }
+.cluster-bar .grp { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.cluster-bar .grp > span { font-size: 13px; color: var(--muted); font-weight: 600; }
