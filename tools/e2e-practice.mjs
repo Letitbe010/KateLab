@@ -88,6 +88,29 @@ for (const h of targets) {
 }
 await r.close();
 
+// worked exercises: every one opens, shows all steps without errors; KG1 shows the solver numbers
+const w = await browser.newPage({ viewport: { width: 390, height: 844 } });
+const werr = [];
+w.on('pageerror', (e) => werr.push(e.message));
+await w.goto(base + '#/ebatziak');
+const wl = await w.locator('a.tile').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+check(wl.length === 11, `worked list has 11 exercises (${wl.length})`);
+for (const h of wl) {
+  await w.goto(base + h);
+  await w.getByRole('button', { name: 'Hurrengo urratsa' }).click();
+  await w.getByRole('button', { name: 'Dena erakutsi' }).click();
+  const n = await w.locator('.wstep').count();
+  const youNow = await w.getByText('Orain zuk').count();
+  check(n >= 3 && werr.length === 0 && youNow === 1, `${h}: ${n} steps shown, "Orain zuk" link${werr.length ? ' — ' + werr.join('; ') : ''}`);
+  if (h.endsWith('tren-bi-etapa')) {
+    const txt = await w.locator('.steps').innerText();
+    check(txt.includes('1440 · 20/40 = 720 rpm') && txt.includes('720 · 25/50 = 360 rpm'), 'KG1 worked: 1440 · 20/40 = 720 and 720 · 25/50 = 360');
+    await w.screenshot({ path: `${out}/eu_worked_kg1.png`, fullPage: true });
+  }
+  if (h.endsWith('fresagailua')) await w.screenshot({ path: `${out}/eu_worked_fresagailua.png`, fullPage: true });
+}
+await w.close();
+
 // desktop view of the home and of the milling exercise
 const d = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 await d.goto(base + '#/praktika');

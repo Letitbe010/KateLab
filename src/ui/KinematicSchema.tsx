@@ -70,6 +70,8 @@ export interface KinematicSchemaProps {
   speeds?: Record<string, string>;
   masked?: string[];
   highlight?: boolean; // colour the power path (default true)
+  /** Colour only these elements (step-by-step worked exercises); overrides the power path. */
+  lit?: string[];
 }
 
 function elementData(e: Element): string {
@@ -109,7 +111,7 @@ const path = (o: O, pts: [number, number][], close = true) =>
     .join('') + (close ? 'Z' : '');
 
 export function KinematicSchema(props: KinematicSchemaProps) {
-  const { chain, state, lang = 'eu', locked = false, onStateChange, speeds, masked = [], highlight = true } = props;
+  const { chain, state, lang = 'eu', locked = false, onStateChange, speeds, masked = [], highlight = true, lit: litOnly } = props;
   const t = TXT[lang];
   const L = useMemo(() => props.layout ?? chain.layout ?? autoLayout(chain), [props.layout, chain]);
 
@@ -131,7 +133,8 @@ export function KinematicSchema(props: KinematicSchemaProps) {
 
   const act = new Set(activeElements(chain, state).map((e) => e.id));
   const topo = topology(chain, state);
-  const on = (e: Element) => highlight && act.has(e.id) && topo.reached.has(e.from);
+  const litSet = litOnly ? new Set(litOnly) : null;
+  const on = (e: Element) => (litSet ? litSet.has(e.id) : highlight && act.has(e.id) && topo.reached.has(e.from));
   const clusterOf = new Map<string, string>();
   for (const c of chain.clusters) for (const o of c.options) clusterOf.set(o, c.id);
   const canSwitch = !locked && !!onStateChange && chain.clusters.length > 0;

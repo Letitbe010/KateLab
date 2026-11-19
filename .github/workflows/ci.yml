@@ -38,7 +38,7 @@ jobs:
       - run: npm ci
       # The Python oracle solves golden, fixture and random chains independently;
       # tests/oracle.test.ts compares it with solvers A and B.
-      - run: python tools/oracle/kinematics.py tools/oracle/out/oracle.json tests/golden/golden.json tests/fixtures/euskadi2020.json tests/oracle/random-chains.json tests/oracle/generated-chains.json src/data/pool/ope-euskadi-2020.json src/data/pool/generated.json
+      - run: python tools/oracle/kinematics.py tools/oracle/out/oracle.json tests/golden/golden.json tests/fixtures/euskadi2020.json tests/oracle/random-chains.json tests/oracle/generated-chains.json src/data/pool/ope-euskadi-2020.json src/data/pool/generated.json src/data/pool/basics.json
       - run: npm run oracle
         env:
           ORACLE_REQUIRED: '1'

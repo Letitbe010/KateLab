@@ -1,0 +1,104 @@
+{
+  "_comment": "Worked exercises (spec §15). Each one is built on a verified pool exercise; every number is computed by the solver at run time. Texts: draft until the user reviews them.",
+  "worked": [
+    {
+      "id": "tren-bi-etapa",
+      "pool": "oinarria-kg1",
+      "title": {
+        "eu": "Bi etapako engranaje-trena",
+        "es": "Tren de engranajes de dos etapas"
+      },
+      "review": "draft"
+    },
+    {
+      "id": "tartekaria",
+      "pool": "tren-sinplea-1",
+      "title": {
+        "eu": "Gurpil tartekaria eta noranzkoa",
+        "es": "Rueda intermedia y sentido de giro"
+      },
+      "review": "draft"
+    },
+    {
+      "id": "poleak",
+      "pool": "oinarria-poleak",
+      "title": {
+        "eu": "Polea-trena",
+        "es": "Tren de poleas"
+      },
+      "review": "draft"
+    },
+    {
+      "id": "torlojua-polea",
+      "pool": "oinarria-torlojua-polea",
+      "title": {
+        "eu": "Torloju amaigabea + polea",
+        "es": "Tornillo sinfín + polea"
+      },
+      "review": "draft"
+    },
+    {
+      "id": "kremailera",
+      "pool": "elikadura-kremailera-1",
+      "title": {
+        "eu": "Pinoi-kremailera (Madril 2025 estiloa)",
+        "es": "Piñón-cremallera (estilo Madrid 2025)"
+      },
+      "review": "draft"
+    },
+    {
+      "id": "kaxa-3",
+      "pool": "oinarria-kg3",
+      "title": {
+        "eu": "3 abiadurako kaxa eta ardatzen arteko distantzia",
+        "es": "Caja de 3 velocidades y distancia entre ejes"
+      },
+      "review": "draft"
+    },
+    {
+      "id": "kaxa-6",
+      "pool": "tornu-buru-kaxa-1",
+      "title": {
+        "eu": "6 abiadurako kaxa: abiadura-taula",
+        "es": "Caja de 6 velocidades: tabla de velocidades"
+      },
+      "review": "draft"
+    },
+    {
+      "id": "fresagailua",
+      "pool": "ope-euskadi-2020-3",
+      "title": {
+        "eu": "Fresagailu osoa (Euskadi 2020)",
+        "es": "Fresadora completa (Euskadi 2020)"
+      },
+      "review": "draft"
+    },
+    {
+      "id": "zatiketa",
+      "pool": "oinarria-zatiketa",
+      "title": {
+        "eu": "Plater zatitzailea",
+        "es": "Plato divisor"
+      },
+      "review": "draft"
+    },
+    {
+      "id": "aldaketa",
+      "pool": "oinarria-aldaketa",
+      "title": {
+        "eu": "Aldaketa-gurpilak",
+        "es": "Ruedas de recambio"
+      },
+      "review": "draft"
+    },
+    {
+      "id": "potentzia",
+      "pool": "potentzia-1",
+      "title": {
+        "eu": "Potentzia eta momentua katean zehar",
+        "es": "Potencia y par a lo largo de la cadena"
+      },
+      "review": "draft"
+    }
+  ]
+}

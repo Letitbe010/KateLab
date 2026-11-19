@@ -72,7 +72,8 @@
       "title": {
         "eu": "Bi etapako engranaje-trena",
         "es": "Tren de engranajes de dos etapas"
-      }
+      },
+      "archetype": "tren-sinplea"
     },
     {
       "id": "oinarria-kg3",
@@ -157,7 +158,317 @@
       "title": {
         "eu": "3 abiadurako kaxa",
         "es": "Caja de 3 velocidades"
-      }
+      },
+      "archetype": "abiadura-kaxa"
+    },
+    {
+      "origin": "adapted",
+      "review": "review-needed",
+      "id": "oinarria-poleak",
+      "title": {
+        "eu": "Polea-trena",
+        "es": "Tren de poleas"
+      },
+      "sourceNote": "Argibideetako KG8 kasua (D1 = 100, 1500 rpm, D2 = 250), bigarren etapa batekin luzatua.",
+      "difficulty": 1,
+      "chain": {
+        "shafts": [
+          {
+            "id": "I",
+            "label": "I"
+          },
+          {
+            "id": "II",
+            "label": "II"
+          },
+          {
+            "id": "III",
+            "label": "III"
+          }
+        ],
+        "elements": [
+          {
+            "kind": "belt",
+            "id": "u1",
+            "from": "I",
+            "to": "II",
+            "d1": "100",
+            "d2": "250"
+          },
+          {
+            "kind": "belt",
+            "id": "u2",
+            "from": "II",
+            "to": "III",
+            "d1": "120",
+            "d2": "300",
+            "crossed": true
+          }
+        ],
+        "clusters": [],
+        "input": {
+          "shaft": "I",
+          "n": "1500",
+          "direction": "cw"
+        },
+        "viewpoint": {
+          "eu": "motorraren aldetik begiratuta",
+          "es": "mirando desde el motor"
+        }
+      },
+      "asks": [
+        {
+          "type": "speed",
+          "shaft": "III"
+        },
+        {
+          "type": "ratio",
+          "from": "I",
+          "to": "III"
+        },
+        {
+          "type": "direction",
+          "shaft": "III"
+        }
+      ],
+      "text": {
+        "eu": "Motor batek I ardatza 1500 rpm-tan biratzen du, erlojuaren orratzen noranzkoan (motorraren aldetik begiratuta). Bi uhalen bidez transmititzen da higidura III ardatzeraino; bigarren uhala gurutzatua da. Poleen diametroak (mm) eskeman daude. Ez dago irristatzerik.",
+        "es": "Un motor hace girar el eje I a 1500 rpm en sentido horario (mirando desde el motor). El movimiento llega al eje III mediante dos correas; la segunda es cruzada. Los diámetros de las poleas (mm) figuran en el esquema. No hay deslizamiento."
+      },
+      "archetype": "tren-sinplea"
+    },
+    {
+      "origin": "adapted",
+      "review": "review-needed",
+      "id": "oinarria-torlojua-polea",
+      "title": {
+        "eu": "Torloju amaigabea + polea",
+        "es": "Tornillo sinfín + polea"
+      },
+      "sourceNote": "Argibideetako KG6 kasua (sarrera 1, Z = 40, 1400 rpm), polea-etapa batekin luzatua.",
+      "difficulty": 1,
+      "chain": {
+        "shafts": [
+          {
+            "id": "I",
+            "label": "I"
+          },
+          {
+            "id": "II",
+            "label": "II"
+          },
+          {
+            "id": "III",
+            "label": "III"
+          }
+        ],
+        "elements": [
+          {
+            "kind": "worm",
+            "id": "w",
+            "from": "I",
+            "to": "II",
+            "starts": 1,
+            "z": 40
+          },
+          {
+            "kind": "belt",
+            "id": "u",
+            "from": "II",
+            "to": "III",
+            "d1": "80",
+            "d2": "140"
+          }
+        ],
+        "clusters": [],
+        "input": {
+          "shaft": "I",
+          "n": "1400"
+        }
+      },
+      "asks": [
+        {
+          "type": "speed",
+          "shaft": "II"
+        },
+        {
+          "type": "speed",
+          "shaft": "III"
+        },
+        {
+          "type": "ratio",
+          "from": "I",
+          "to": "III"
+        }
+      ],
+      "text": {
+        "eu": "Motorrak 1400 rpm-tan biratzen du I ardatza; ardatz horretan sarrera bakarreko torloju amaigabe bat dago, 40 hortzeko gurpil helikoidala eragiten duena (II ardatza). II ardatzetik III ardatzera Ø80/Ø140 uhal batek transmititzen du higidura.",
+        "es": "El motor hace girar el eje I a 1400 rpm; en él hay un tornillo sinfín de una entrada que arrastra una corona de 40 dientes (eje II). Del eje II al eje III el movimiento pasa por una correa Ø80/Ø140."
+      },
+      "archetype": "torloju-amaigabea"
+    },
+    {
+      "origin": "adapted",
+      "review": "review-needed",
+      "id": "oinarria-zatiketa",
+      "title": {
+        "eu": "Plater zatitzailea: 24 zati",
+        "es": "Plato divisor: 24 partes"
+      },
+      "sourceNote": "Argibideetako KG7 kasua (K = 40, N = 24), Brown & Sharpe platerekin.",
+      "difficulty": 2,
+      "chain": {
+        "shafts": [
+          {
+            "id": "I",
+            "label": "B"
+          },
+          {
+            "id": "II",
+            "label": "H"
+          }
+        ],
+        "elements": [
+          {
+            "kind": "worm",
+            "id": "w",
+            "from": "I",
+            "to": "II",
+            "starts": 1,
+            "z": 40
+          }
+        ],
+        "clusters": [],
+        "input": {
+          "shaft": "I",
+          "n": "40"
+        }
+      },
+      "data": {
+        "K": 40,
+        "platesHoles": [
+          [
+            15,
+            16,
+            17,
+            18,
+            19,
+            20
+          ],
+          [
+            21,
+            23,
+            27,
+            29,
+            31,
+            33
+          ],
+          [
+            37,
+            39,
+            41,
+            43,
+            47,
+            49
+          ]
+        ]
+      },
+      "asks": [
+        {
+          "type": "indexing",
+          "N": 24
+        }
+      ],
+      "text": {
+        "eu": "Plater zatitzaile batekin (K = 40) engranaje baten 24 hortzak fresatu behar dira, zatiketa sinplez. Eskuragarri dauden zulo-zirkuluak (Brown & Sharpe, hiru plater): 1) 15, 16, 17, 18, 19, 20; 2) 21, 23, 27, 29, 31, 33; 3) 37, 39, 41, 43, 47, 49.",
+        "es": "Con un plato divisor (K = 40) hay que fresar los 24 dientes de un engranaje, por división simple. Círculos de agujeros disponibles (Brown & Sharpe, tres platos): 1) 15, 16, 17, 18, 19, 20; 2) 21, 23, 27, 29, 31, 33; 3) 37, 39, 41, 43, 47, 49."
+      },
+      "archetype": "plater-zatitzailea"
+    },
+    {
+      "origin": "adapted",
+      "review": "review-needed",
+      "id": "oinarria-aldaketa",
+      "title": {
+        "eu": "Aldaketa-gurpilak: M10 haria",
+        "es": "Ruedas de recambio: rosca M10"
+      },
+      "sourceNote": "Argibideetako KG9 kasua (torloju patroia 6 mm, haria 1,5 mm).",
+      "difficulty": 3,
+      "chain": {
+        "shafts": [
+          {
+            "id": "I",
+            "label": "AN"
+          },
+          {
+            "id": "II",
+            "label": "TP"
+          }
+        ],
+        "linear": [
+          {
+            "id": "C",
+            "label": "gurdia"
+          }
+        ],
+        "elements": [
+          {
+            "kind": "clutch",
+            "id": "c",
+            "from": "I",
+            "to": "II"
+          },
+          {
+            "kind": "screw",
+            "id": "s",
+            "from": "II",
+            "output": "C",
+            "pitch": "6",
+            "starts": 1
+          }
+        ],
+        "clusters": [],
+        "input": {
+          "shaft": "I",
+          "n": "100"
+        }
+      },
+      "data": {
+        "changeGears": [
+          20,
+          25,
+          30,
+          35,
+          40,
+          45,
+          50,
+          55,
+          60,
+          65,
+          70,
+          75,
+          80,
+          90,
+          100,
+          110,
+          120,
+          127
+        ]
+      },
+      "asks": [
+        {
+          "type": "changeGears",
+          "threadPitch": "3/2",
+          "leadScrewPitch": "6",
+          "mountingCondition": true
+        }
+      ],
+      "text": {
+        "eu": "Tornu batean M10 hari metrikoa (P = 1,5 mm) ebaki behar da. Torloju patroiaren pausoa 6 mm da, eta ardatz nagusiaren eta torloju patroiaren arteko erlazioa 1:1 da aldaketa-gurpilik gabe. Aukeratu lau gurpileko tren bat multzo honetatik: 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 110, 120, 127 (bakoitza behin). Muntaketa-baldintza: Za + Zb > Zc + 15 eta Zc + Zd > Zb + 15.",
+        "es": "En un torno hay que roscar una rosca métrica M10 (P = 1,5 mm). El husillo patrón tiene paso 6 mm y la relación entre el eje principal y el husillo patrón es 1:1 sin ruedas de recambio. Elige un tren de cuatro ruedas de este juego: 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 110, 120, 127 (una de cada). Condición de montaje: Za + Zb > Zc + 15 y Zc + Zd > Zb + 15."
+      },
+      "archetype": "aldaketa-gurpilak"
     }
   ]
 }

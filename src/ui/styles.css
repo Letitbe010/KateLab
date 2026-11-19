@@ -149,3 +149,21 @@ select { font: inherit; min-height: 44px; padding: 6px 8px; border: 1px solid #b
 .cluster-bar { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: 4px 0 8px; }
 .cluster-bar .grp { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .cluster-bar .grp > span { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+/* ---------- worked exercises ---------- */
+.ask-list { margin: 4px 0 10px; padding-left: 22px; }
+.steps { display: grid; gap: 10px; margin-top: 14px; }
+.wstep { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: #fff; }
+.wstep.current { border-color: var(--power); box-shadow: 0 0 0 1px var(--power) inset; }
+.wstep header { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; margin-bottom: 6px; }
+.layer { margin-top: 8px; }
+.layer .lab { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; margin-bottom: 2px; }
+.layer p { margin: 2px 0; }
+.layer.careful { background: var(--warnbg); border-left: 3px solid var(--warn); padding: 6px 10px; border-radius: 0 8px 8px 0; }
+.layer.careful .lab { color: var(--warn); }
+.wstep table { border-collapse: collapse; font-size: 14.5px; margin: 4px 0; }
+.wstep td, .wstep th { border: 1px solid var(--line); padding: 4px 9px; text-align: left; }
+.wstep th { background: var(--soft); font-weight: 600; }
+.wstep tr.best td { background: #ffe9cc; }
+a.button { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; border-radius: 10px; text-decoration: none; border: 1px solid var(--line); }
+a.button.primary { background: var(--ink); color: #fff; border-color: var(--ink); }

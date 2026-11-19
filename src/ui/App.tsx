@@ -4,6 +4,7 @@ import { PracticeExercise } from './PracticeExercise';
 import { PracticeHome } from './PracticeHome';
 import { type Route, hrefOf, useRoute } from './router';
 import { SchemaGallery } from './SchemaGallery';
+import { WorkedItem, WorkedList } from './WorkedView';
 
 const LANG_KEY = 'katelab.lang';
 
@@ -18,12 +19,13 @@ function loadLang(): Lang {
 
 const NAV: { key: string; route: Route; icon: string }[] = [
   { key: 'nav.theory', route: { name: 'soon', section: 'teoria' }, icon: 'T' },
-  { key: 'nav.worked', route: { name: 'soon', section: 'ebatziak' }, icon: 'E' },
+  { key: 'nav.worked', route: { name: 'worked' }, icon: 'E' },
   { key: 'nav.practice', route: { name: 'home' }, icon: 'P' },
   { key: 'nav.progress', route: { name: 'soon', section: 'aurrerapena' }, icon: 'A' },
 ];
 
-const sectionOf = (r: Route): string => (r.name === 'soon' ? r.section : r.name === 'schemas' ? 'eskemak' : 'praktika');
+const sectionOf = (r: Route): string =>
+  r.name === 'soon' ? r.section : r.name === 'schemas' ? 'eskemak' : r.name === 'worked' || r.name === 'workedItem' ? 'ebatziak' : 'praktika';
 
 export function App() {
   const [lang, setLang] = useState<Lang>(loadLang);
@@ -81,6 +83,8 @@ export function App() {
             {route.name === 'generated' && <PracticeExercise key={`${route.archetype}-${route.seed}`} source={{ kind: 'generated', archetype: route.archetype, seed: route.seed }} />}
             {route.name === 'pool' && <PracticeExercise key={route.id} source={{ kind: 'pool', id: route.id }} />}
             {route.name === 'schemas' && <SchemaGallery lang={lang} />}
+            {route.name === 'worked' && <WorkedList />}
+            {route.name === 'workedItem' && <WorkedItem key={route.id} id={route.id} />}
             {route.name === 'soon' && (
               <section className="card">
                 <h1>{t(NAV.find((n) => sectionOf(n.route) === route.section)?.key ?? 'nav.practice')}</h1>

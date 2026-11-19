@@ -15,6 +15,7 @@
 | 4 | Zuzentzailea (soluzio anitzekoak barne) + diagnostikoa + ebazpen-datuak | Testak berde |
 | 5 | Sorgailua (10 arketipo) + pool-a (Euskadi 2020 + sortutakoak) | 10 000 ariketa egiaztatuta; pool-a orakuluarekin |
 | 6 | UI: Praktika (erantzun-formularioa, zuzenketa, ebazpena), eu/es | KG1 eta KG3 mugikorrean (390 px) bi hizkuntzetan: e2e berde |
+| 7 | Ariketa ebatziak (11), urratsez urrats, zer/zergatik/kontuz | Zenbaki-testak berde (zenbaki guztiak ebazletik) |
 
 ## Komandoak / Comandos
 

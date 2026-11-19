@@ -4,6 +4,7 @@
  *   #/praktika                           → practice home
  *   #/praktika/<archetype>/seed/<n>      → generated exercise
  *   #/praktika/pool/<id>                 → pool exercise
+ *   #/ebatziak, #/ebatziak/<id>          → worked exercises
  *   #/eskemak                            → schema gallery (development)
  */
 import { useEffect, useState } from 'react';
@@ -13,6 +14,8 @@ export type Route =
   | { name: 'generated'; archetype: string; seed: number }
   | { name: 'pool'; id: string }
   | { name: 'schemas' }
+  | { name: 'worked' }
+  | { name: 'workedItem'; id: string }
   | { name: 'soon'; section: string };
 
 export function parseHash(hash: string): Route {
@@ -21,7 +24,8 @@ export function parseHash(hash: string): Route {
     return { name: 'generated', archetype: parts[1], seed: Number(parts[3]) };
   if (parts[0] === 'praktika' && parts[1] === 'pool' && parts[2]) return { name: 'pool', id: parts[2] };
   if (parts[0] === 'eskemak') return { name: 'schemas' };
-  if (parts[0] && ['teoria', 'ebatziak', 'aurrerapena'].includes(parts[0])) return { name: 'soon', section: parts[0] };
+  if (parts[0] === 'ebatziak') return parts[1] ? { name: 'workedItem', id: parts[1] } : { name: 'worked' };
+  if (parts[0] && ['teoria', 'aurrerapena'].includes(parts[0])) return { name: 'soon', section: parts[0] };
   return { name: 'home' };
 }
 
@@ -33,6 +37,10 @@ export const hrefOf = (r: Route): string => {
       return `#/praktika/pool/${encodeURIComponent(r.id)}`;
     case 'schemas':
       return '#/eskemak';
+    case 'worked':
+      return '#/ebatziak';
+    case 'workedItem':
+      return `#/ebatziak/${encodeURIComponent(r.id)}`;
     case 'soon':
       return `#/${r.section}`;
     default:
