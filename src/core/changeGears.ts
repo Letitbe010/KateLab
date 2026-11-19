@@ -5,10 +5,13 @@
  *   compound train : (Za·Zc)/(Zb·Zd) = i    (Za, Zc drivers; Zb, Zd driven)
  * A gear may be used only as many times as it appears in the set.
  *
- * Mounting condition (optional): Za + Zb > Zc + C and Zc + Zd > Zb + C, with
- * C = 15 by default. TO BE CONFIRMED with the user's reference book.
+ * Mounting condition (optional, level 3): Za + Zb > Zc + C and Zc + Zd > Zb + C,
+ * with C = 15 (confirmed by the user on 2026-11-19).
  */
 import { type Rational, div, eq, mul, q } from './rational';
+
+/** Default change-gear set (each gear once), confirmed by the user on 2026-11-19. */
+export const DEFAULT_GEARSET = [20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 110, 120, 127];
 
 export interface Train2 {
   za: number;
@@ -55,20 +58,30 @@ export function simpleTrains(i: Rational, set: number[]): Train2[] {
   return out;
 }
 
+const memo = new Map<string, Train4[]>();
+
 export function compoundTrains(i: Rational, set: number[], opt: ChangeGearOptions = {}): Train4[] {
+  const key = `${i.n}/${i.d}|${[...set].sort((a, b) => a - b).join(',')}|${opt.mountingCondition ? 1 : 0}|${opt.clearance ?? 15}`;
+  const hit = memo.get(key);
+  if (hit) return hit.map((t) => ({ ...t }));
   const u = [...new Set(set)].sort((a, b) => a - b);
   const out: Train4[] = [];
+  // exact integer test za·zc·den = zb·zd·num (all products far below 2^53)
+  const num = Number(i.n);
+  const den = Number(i.d);
+  const exact = Number.isSafeInteger(num) && Number.isSafeInteger(den) && u.every((z) => Number.isSafeInteger(z) && z < 10_000);
   for (const za of u)
     for (const zb of u)
       for (const zc of u)
         for (const zd of u) {
-          if (!eq(mul(q(za, zb), q(zc, zd)), i)) continue;
+          if (exact ? za * zc * den !== zb * zd * num : !eq(mul(q(za, zb), q(zc, zd)), i)) continue;
           if (!fitsSet([za, zb, zc, zd], set)) continue;
           const t = { za, zb, zc, zd };
           if (opt.mountingCondition && !mountingOk(t, opt.clearance)) continue;
           out.push(t);
         }
-  return out;
+  memo.set(key, out);
+  return out.map((t) => ({ ...t }));
 }
 
 export type ChangeGearReason = 'ratio-mismatch' | 'gear-not-in-set' | 'gear-reused' | 'mounting-condition' | 'bad-input';

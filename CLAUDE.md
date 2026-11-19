@@ -8,7 +8,9 @@
 - Uhalaren irristatzea: n2 = n1·(D1/D2)·(1 − s) (erabiltzaileak baieztatua). Gurpilaren aldetik eragindako torloju amaigabea → ariketa baliogabea (erabiltzaileak baieztatua).
 - Multzo labainkorretan Z batura konstantea (modulu berarekin); bestela ariketa baliogabea.
 - Soluzio anitzeko eskaerak (zatiketa, aldaketa-gurpilak): murriztapenak egiaztatu, ez soluzio bakarra.
-- Plater zatitzaileen eta aldaketa-gurpilen multzoak ez dira "egiaztatutzat" jotzen erabiltzaileak iturriarekin baieztatu arte.
+- Plater zatitzaileen multzoak ez dira "egiaztatutzat" jotzen erabiltzaileak iturriarekin baieztatu arte.
+- Aldaketa-gurpilak (erabiltzaileak baieztatua, 2026-11-19): multzo lehenetsia 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 110, 120, 127 (bakoitza behin); muntaketa-baldintza Za + Zb > Zc + 15 eta Zc + Zd > Zb + 15.
+- Zatiketa: zuloak ≥ zirkulua (adib. 0 + 30/18) → okerra, azalpenarekin (erabiltzaileak baieztatua).
 - Kanpoko iturrien soluzioak ez dira inoiz egiatzat hartzen: beti berriz ebatzi.
 - Golden testak (tests/golden) ez dira inoiz aldatzen inplementazioari egokitzeko.
 - Zuzenketan ez da AArik erabiltzen. Teoriako eta ebatzietako zenbakiak ebazletik txertatzen dira.

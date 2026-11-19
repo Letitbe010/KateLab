@@ -4,7 +4,7 @@
  * (extra ground truth, kept apart from the spec goldens).
  */
 import fc from 'fast-check';
-import { checkSimple, compoundTrains, mountingOk, requiredRatio, simpleTrains } from '../src/core/changeGears';
+import { checkCompound, checkSimple, compoundTrains, mountingOk, requiredRatio, simpleTrains } from '../src/core/changeGears';
 import { globalChecks } from '../src/core/checks';
 import { centerDistance, gearGeometry, pitchDiameter } from '../src/core/geometry';
 import { type ChainJSON, chainFromJSON } from '../src/core/model';
@@ -68,7 +68,31 @@ describe('change gears', () => {
     expect(compoundTrains(R.q(1, 6), set)).toContainEqual({ za: 30, zb: 60, zc: 20, zd: 60 }); // 60 twice in the set
     expect(compoundTrains(R.q(1, 9), set)).not.toContainEqual({ za: 20, zb: 60, zc: 20, zd: 60 }); // 20 only once
   });
-  it('mounting condition (C = 15, to be confirmed)', () => {
+  it('fast integer search = brute-force rational check (random ratios and sets)', () => {
+    fc.assert(
+      fc.property(
+        fc.integer({ min: 1, max: 12 }),
+        fc.integer({ min: 1, max: 12 }),
+        fc.uniqueArray(fc.integer({ min: 18, max: 130 }), { minLength: 4, maxLength: 9 }),
+        fc.boolean(),
+        (a, b, s, mount) => {
+          const i = R.q(a, b);
+          const fast = compoundTrains(i, s, { mountingCondition: mount });
+          const brute: { za: number; zb: number; zc: number; zd: number }[] = [];
+          for (const za of [...s].sort((x, y) => x - y))
+            for (const zb of [...s].sort((x, y) => x - y))
+              for (const zc of [...s].sort((x, y) => x - y))
+                for (const zd of [...s].sort((x, y) => x - y)) {
+                  const t = { za, zb, zc, zd };
+                  if (checkCompound(i, s, t, { mountingCondition: mount }).valid) brute.push(t);
+                }
+          expect(fast).toEqual(brute);
+        },
+      ),
+      { numRuns: 200 },
+    );
+  });
+  it('mounting condition (C = 15, confirmed by the user)', () => {
     expect(mountingOk({ za: 20, zb: 40, zc: 30, zd: 60 })).toBe(true); // 60 > 45 and 90 > 55
     expect(mountingOk({ za: 20, zb: 25, zc: 40, zd: 60 })).toBe(false); // 45 > 55 fails
   });
