@@ -4,7 +4,7 @@
  * expected answers with every valid solution for multi-solution asks.
  */
 import { requiredRatio } from '../core/changeGears';
-import { centerDistance } from '../core/geometry';
+import { centerDistance, rackPinionDiameter } from '../core/geometry';
 import { type AskResult, fmt, gradeAsk } from '../core/grader';
 import { indexingFraction } from '../core/indexing';
 import { type Ask, type KinExercise, exerciseForAsk } from '../core/model';
@@ -27,6 +27,14 @@ function formulaLine(ex: KinExercise, ask: Ask, t: (k: string, v?: Record<string
     if (!e || e.kind !== 'gear' || !e.module) return null;
     const a = centerDistance(e.module, e.z1, e.z2, !!e.internal);
     return t(e.internal ? 'sol.centreInt' : 'sol.centre', { m: rs(e.module).replace('.', ','), z1: e.z1, z2: e.z2, a: fmt(pr(a), 2) });
+  }
+  if (ask.type === 'pitchDiameter') {
+    const e = ex.chain.elements.find((x) => x.id === ask.element);
+    if (e?.kind === 'rack') {
+      const d = rackPinionDiameter(e);
+      return e.pitch ? t('sol.pitchDiameterP', { p: fmt(pr(e.pitch), 2), z: e.z, d: fmt(d, 2) }) : t('sol.pitchDiameter', { m: fmt(pr(e.module!), 2), z: e.z, d: fmt(d, 2) });
+    }
+    return null;
   }
   if (ask.type === 'indexing') {
     const K = ex.data?.K ?? 40;
@@ -92,7 +100,9 @@ function AskSolution({ ex, ask, index }: { ex: KinExercise; ask: Ask; index: num
       {data?.linear.map((l) => (
         <p key={l.output} className="formula">
           {l.kind === 'rack'
-            ? t('sol.rack', { output: outputName(ex, lang, l.output), m: rs(l.module!), z: l.z!, n: n2(l.n), v: fmt(l.v, 2), vs: fmt(mmPerMinToMPerS(l.v), 4) })
+            ? l.rackPitch
+              ? t('sol.rackP', { output: outputName(ex, lang, l.output), p: fmt(pr(l.rackPitch), 2), z: l.z!, n: n2(l.n), v: fmt(l.v, 2), vs: fmt(mmPerMinToMPerS(l.v), 4) })
+              : t('sol.rack', { output: outputName(ex, lang, l.output), m: rs(l.module!), z: l.z!, n: n2(l.n), v: fmt(l.v, 2), vs: fmt(mmPerMinToMPerS(l.v), 4) })
             : t('sol.screw', { output: outputName(ex, lang, l.output), n: n2(l.n), k: l.starts!, p: rs(l.pitch!), v: fmt(l.v, 2) })}
         </p>
       ))}

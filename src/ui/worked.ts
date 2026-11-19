@@ -5,7 +5,7 @@
  * No number is written in the texts: they are templates filled here.
  */
 import { DEFAULT_GEARSET, compoundTrains, requiredRatio } from '../core/changeGears';
-import { centerDistance, pitchDiameter } from '../core/geometry';
+import { centerDistance, rackPinionDiameter } from '../core/geometry';
 import { fmt, gradeAsk, unitsFor } from '../core/grader';
 import { indexingFraction, indexingSolutions } from '../core/indexing';
 import { type Ask, type Element, type KinExercise, type State, activeElements, exerciseForAsk, stateKey } from '../core/model';
@@ -172,11 +172,15 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
         const out = outputName(ex, lang, ask.output);
         explained.get(kOf(st))?.add(drive.id);
         if (drive.kind === 'rack') {
-          const d = pitchDiameter(drive.module, drive.z);
+          const d = rackPinionDiameter(drive);
           push({
             key: `${key}-lin`,
             title: t('wk.rack.title', { output: out }),
-            what: [t('wk.rack.what', { m: rs(drive.module).replace('.', ','), z: drive.z, d: n2(d), n: n2(n), v: fmt(v, 2), vs: fmt(mmPerMinToMPerS(v), 4) })],
+            what: [
+              drive.pitch
+                ? t('wk.rackP.what', { p: fmt(pr(drive.pitch), 2), z: drive.z, d: fmt(d, 2), n: n2(n), v: fmt(v, 2), vs: fmt(mmPerMinToMPerS(v), 4) })
+                : t('wk.rack.what', { m: fmt(pr(drive.module as Rational), 2), z: drive.z, d: fmt(d, 2), n: n2(n), v: fmt(v, 2), vs: fmt(mmPerMinToMPerS(v), 4) }),
+            ],
             why: t('wk.rack.why'),
             careful: t('wk.rack.careful'),
             state: st,
@@ -219,6 +223,20 @@ export function buildWorked(ex: KinExercise, lang: Lang): WStep[] {
           careful: t('wk.table.careful'),
           table: { head: [t('sol.state'), 'rpm'], rows: tb.rows.map((r) => ({ label: stateText(ex, r.state), value: n2(r.n), best: r.n === max || r.n === min || rs(r.n) === rs(max) || rs(r.n) === rs(min) })) },
           state: st,
+        });
+        break;
+      }
+      case 'pitchDiameter': {
+        const e = ex.chain.elements.find((x) => x.id === ask.element);
+        if (e?.kind !== 'rack') break;
+        const d = rackPinionDiameter(e);
+        push({
+          key,
+          title: t('ask.pitchDiameter', { what: elementName(ex, e.id) }),
+          what: [e.pitch ? t('sol.pitchDiameterP', { p: fmt(pr(e.pitch), 2), z: e.z, d: fmt(d, 2) }) : t('sol.pitchDiameter', { m: fmt(pr(e.module as Rational), 2), z: e.z, d: fmt(d, 2) })],
+          careful: t('wk.rack.careful'),
+          state: st,
+          lit: [e.id],
         });
         break;
       }

@@ -162,7 +162,8 @@ export function validateChain(chain: Chain): ValidationResult {
         break;
       case 'rack':
         if (!posInt(e.z)) err('element.teeth', `Element ${e.id}: teeth must be a positive integer`, e.id);
-        if (!pos(e.module)) err('element.module', `Element ${e.id}: module must be > 0`, e.id);
+        if (!!e.module === !!e.pitch) err('element.rack', `Element ${e.id}: give either the module or the rack pitch`, e.id);
+        else if (!pos((e.module ?? e.pitch) as Rational)) err('element.module', `Element ${e.id}: module / pitch must be > 0`, e.id);
         break;
       case 'screw':
         if (!pos(e.pitch)) err('element.pitch', `Element ${e.id}: pitch must be > 0`, e.id);
@@ -289,6 +290,8 @@ export function validateExercise(ex: KinExercise): ValidationResult {
     if (a.type === 'indexing' && (!posInt(a.N) || !ex.data?.platesHoles?.length))
       err('ask.indexing', 'indexing needs N > 0 and a plate set in data.platesHoles');
     if (a.type === 'changeGears' && !ex.data?.changeGears?.length) err('ask.changeGears', 'changeGears needs a gear set');
+    if (a.type === 'pitchDiameter' && !chain.elements.some((e) => e.id === a.element && (e.kind === 'rack' || (e.kind === 'gear' && e.module))))
+      err('ask.ref', `pitchDiameter: ${a.element} must be a rack pinion or a gear with module`, a.element);
     if (a.type === 'missingTeeth' && !chain.elements.some((e) => e.id === a.element))
       err('ask.ref', `missingTeeth: unknown element ${a.element}`, a.element);
   }

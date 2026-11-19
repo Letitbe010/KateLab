@@ -53,7 +53,10 @@ const parallel = (e: Element): boolean => e.kind === 'gear' || e.kind === 'belt'
 
 /** Linear speed (mm/min) of a rack or screw driven at n rpm. */
 function linearSpeed(e: Element, n: Rational): PiRational {
-  if (e.kind === 'rack') return pr(mul(mul(e.module, q(e.z)), n), 1); // v = π·m·Z·n
+  if (e.kind === 'rack')
+    return e.pitch
+      ? pr(mul(mul(e.pitch, q(e.z)), n), 0) // v = p·Z·n (rack pitch)
+      : pr(mul(mul(e.module as Rational, q(e.z)), n), 1); // v = π·m·Z·n
   if (e.kind === 'screw') return pr(mul(mul(e.pitch, q(e.starts)), n), 0); // v = n·k·p
   throw new Error(`linearSpeed: ${e.kind} is not a linear element`);
 }

@@ -85,7 +85,7 @@ function elementData(e: Element): string {
     case 'worm':
       return `k = ${e.starts}, Z = ${e.z}`;
     case 'rack':
-      return `Z = ${e.z}, m = ${rs(e.module)}`;
+      return e.pitch ? `Z = ${e.z}, p = ${rs(e.pitch)} mm` : `Z = ${e.z}, m = ${rs(e.module as NonNullable<typeof e.module>)}`;
     case 'screw':
       return `P = ${rs(e.pitch)} mm, k = ${e.starts}`;
     case 'clutch':
@@ -402,7 +402,7 @@ export function KinematicSchema(props: KinematicSchemaProps) {
         for (let i = -66; i <= 66; i += 8) parts.push(<line key={K()} x1={x + i} y1={ry} x2={x + i + 4} y2={ry - 5} stroke={C.blue} strokeWidth={1.1} />);
         labels.push(<path key={K()} d={`M${x - 50},${ry + 24}H${x + 50}`} stroke={C.blue} strokeWidth={1.6} markerStart="url(#arrb)" markerEnd="url(#arrb)" />);
         text(x + 76, ry + 9, lab, { anchor: 'start', color: C.blue, bold: true });
-        text(x, s.c - p.r1 - 7, p.n1 ?? `Z = ${e.z}, m = ${rs(e.module)}`, { lit });
+        text(x, s.c - p.r1 - 7, p.n1 ?? (e.pitch ? `Z = ${e.z}, p = ${rs(e.pitch)} mm` : `Z = ${e.z}, m = ${rs(e.module as NonNullable<typeof e.module>)}`), { lit });
       } else {
         const len = p.len ?? 120;
         const pts: [number, number][] = [];

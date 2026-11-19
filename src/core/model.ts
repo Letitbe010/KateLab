@@ -35,7 +35,8 @@ export type Element =
   | { kind: 'belt'; id: ElementId; from: ShaftId; to: ShaftId; d1: Rational; d2: Rational; crossed?: boolean; slip?: Rational }
   | { kind: 'chain'; id: ElementId; from: ShaftId; to: ShaftId; z1: number; z2: number }
   | { kind: 'worm'; id: ElementId; from: ShaftId; to: ShaftId; starts: number; z: number }
-  | { kind: 'rack'; id: ElementId; from: ShaftId; output: LinearId; z: number; module: Rational }
+  /** Pinion and rack, given by the module m (v = π·m·Z·n) or by the circular pitch p of the rack (v = p·Z·n): exactly one. */
+  | { kind: 'rack'; id: ElementId; from: ShaftId; output: LinearId; z: number; module?: Rational; pitch?: Rational }
   | { kind: 'screw'; id: ElementId; from: ShaftId; output: LinearId; pitch: Rational; starts: number }
   | { kind: 'clutch'; id: ElementId; from: ShaftId; to: ShaftId };
 
@@ -139,6 +140,7 @@ export type AskBase =
   | { type: 'feedPerMin'; output: LinearId }
   | { type: 'centerDistance'; cluster?: ClusterId; element?: ElementId }
   | { type: 'gearGeometry'; element: ElementId }
+  | { type: 'pitchDiameter'; element: ElementId }
   | { type: 'missingTeeth'; element: ElementId; side: 'z1' | 'z2'; target: { shaft: ShaftId; n: Rational } }
   | { type: 'indexing'; N: number }
   | { type: 'changeGears'; threadPitch: Rational; leadScrewPitch: Rational; mountingCondition?: boolean }
@@ -208,7 +210,7 @@ export type ElementJSON =
   | { kind: 'belt'; id: string; from: string; to: string; d1: Num; d2: Num; crossed?: boolean; slip?: Num }
   | { kind: 'chain'; id: string; from: string; to: string; z1: number; z2: number }
   | { kind: 'worm'; id: string; from: string; to: string; starts: number; z: number }
-  | { kind: 'rack'; id: string; from: string; output: string; z: number; module: Num }
+  | { kind: 'rack'; id: string; from: string; output: string; z: number; module?: Num; pitch?: Num }
   | { kind: 'screw'; id: string; from: string; output: string; pitch: Num; starts: number }
   | { kind: 'clutch'; id: string; from: string; to: string };
 
@@ -240,8 +242,14 @@ function elementFromJSON(e: ElementJSON): Element {
       const s = Ro(e.slip);
       return { ...e, d1: R(e.d1), d2: R(e.d2), ...(s ? { slip: s } : {}) } as Element;
     }
-    case 'rack':
-      return { ...e, module: R(e.module) };
+    case 'rack': {
+      const m = Ro(e.module);
+      const p = Ro(e.pitch);
+      const { module: _m, pitch: _p, ...rest } = e;
+      void _m;
+      void _p;
+      return { ...rest, ...(m ? { module: m } : {}), ...(p ? { pitch: p } : {}) };
+    }
     case 'screw':
       return { ...e, pitch: R(e.pitch) };
     default:

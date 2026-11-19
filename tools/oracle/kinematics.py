@@ -107,9 +107,12 @@ def solve_state(chain: dict, st: dict) -> dict:
             eq2.append(sp.Eq(w[a], w[b]))
         elif k == "rack":
             o = e["output"]
-            if pi_pow.setdefault(o, 1) != 1:
+            # module m: v = pi*m*Z*n (coefficient of pi); rack pitch p: v = p*Z*n (no pi)
+            want = 0 if "pitch" in e else 1
+            if pi_pow.setdefault(o, want) != want:
                 return {"ok": False}
-            eq1.append(sp.Eq(c[o], R(e["module"]) * e["z"] * n[a]))
+            size = R(e["pitch"]) if "pitch" in e else R(e["module"])
+            eq1.append(sp.Eq(c[o], size * e["z"] * n[a]))
         elif k == "screw":
             o = e["output"]
             if pi_pow.setdefault(o, 0) != 0:

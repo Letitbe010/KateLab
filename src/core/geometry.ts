@@ -26,6 +26,11 @@ export function gearGeometry(m: Rational, z: number): GearGeometry {
 
 export const pitchDiameter = (m: Rational, z: number): Rational => mul(m, q(z));
 
+/** Pitch diameter of a rack pinion: d = m·Z, or d = p·Z/π when the rack pitch p is given. */
+export function rackPinionDiameter(e: Extract<Element, { kind: 'rack' }>): PiRational {
+  return e.pitch ? pr(mul(e.pitch, q(e.z)), -1) : pr(mul(e.module as Rational, q(e.z)), 0);
+}
+
 export function centerDistance(m: Rational, z1: number, z2: number, internal = false): Rational {
   return div(mul(m, internal ? abs(q(z2 - z1)) : q(z1 + z2)), q(2));
 }

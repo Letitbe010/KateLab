@@ -1,0 +1,99 @@
+{
+  "id": "ope-madrid-2025-7",
+  "origin": "ope",
+  "title": {
+    "eu": "Madril OPE 2025 — Prentsaren elikadura-sistema",
+    "es": "OPE Madrid 2025 — Sistema de alimentación de la prensa"
+  },
+  "sourceNote": "Madril OPE 2025, 0590-112, 7. ariketa (0,75 puntu). Erabiltzaileak emandako orri-argazkitik modelatua. Z₂ eta Z₃ ez dira enuntziatuan ematen: Dp eta engranatzen den gurpilaren modulutik ateratakoak dira (m = 48/16 = 3 → Z₂ = 60/3 = 20; m = 56/28 = 2 → Z₃ = 36/2 = 18). Kremaileraren pausoa p = 4 mm da (modulua m = p/π, ez normalizatua).",
+  "sourceUrl": "https://www.comunidad.madrid/docs/assets/2025/06/21/rh03_257_2025_exam_590112.pdf",
+  "difficulty": 2,
+  "archetype": "elikadura-kremailera",
+  "review": "review-needed",
+  "chain": {
+    "shafts": [
+      {
+        "id": "I",
+        "label": "I"
+      },
+      {
+        "id": "II",
+        "label": "II"
+      },
+      {
+        "id": "III",
+        "label": "III"
+      }
+    ],
+    "linear": [
+      {
+        "id": "R",
+        "label": "kremailera"
+      }
+    ],
+    "elements": [
+      {
+        "kind": "gear",
+        "id": "g12",
+        "from": "I",
+        "to": "II",
+        "z1": 16,
+        "z2": 20,
+        "module": "3"
+      },
+      {
+        "kind": "gear",
+        "id": "g34",
+        "from": "II",
+        "to": "III",
+        "z1": 18,
+        "z2": 28,
+        "module": "2"
+      },
+      {
+        "kind": "rack",
+        "id": "r5",
+        "from": "III",
+        "output": "R",
+        "z": 14,
+        "pitch": "4"
+      }
+    ],
+    "clusters": [],
+    "input": {
+      "shaft": "I",
+      "n": "320"
+    }
+  },
+  "asks": [
+    {
+      "type": "speed",
+      "shaft": "III",
+      "label": {
+        "eu": "a) Kremailerarekin zuzenean engranatzen den pinoiaren abiadura angeluarra (rpm).",
+        "es": "a) Velocidad angular del piñón que engrana directamente con la cremallera (rpm)."
+      }
+    },
+    {
+      "type": "pitchDiameter",
+      "element": "r5",
+      "label": {
+        "eu": "b) Pinoiaren diametro primitiboa.",
+        "es": "b) Diámetro primitivo del piñón."
+      }
+    },
+    {
+      "type": "linearSpeed",
+      "output": "R",
+      "unit": "m/s",
+      "label": {
+        "eu": "b) Kremailerararen desplazamendu-abiadura lineala (m/s).",
+        "es": "b) Velocidad lineal de desplazamiento de la cremallera (m/s)."
+      }
+    }
+  ],
+  "text": {
+    "eu": "Kate zinematikoak prentsa hidraulikoaren elikadura-sistema (garraio-zinta) eragiten du: transmisio-ardatzetik abiatu eta mahai garraiatzailea mugitzen duen pinoi-kremailera sisteman amaitzen da. Lau gurpil zuzeneko sekuentzia bat da, eta 5. pinoiak pauso konstanteko kremailera bat eragiten du. Datuak: 1. gurpila Dp₁ = 48 mm, Z₁ = 16, n₁ = 320 rpm; 2. gurpila Dp₂ = 60 mm (1arekin engranatzen da); 3. gurpila Dp₃ = 36 mm (2aren ardatz berean); 4. gurpila Dp₄ = 56 mm, Z₄ = 28 (3arekin engranatzen da); 5. pinoia Z₅ = 14 (4aren ardatz berean); kremaileraren pausoa p = 4 mm.",
+    "es": "La cadena cinemática acciona el sistema de alimentación de la prensa hidráulica (cinta transportadora): parte del árbol de transmisión y termina en el sistema piñón-cremallera que desplaza la mesa transportadora. Es una secuencia de 4 ruedas de dientes rectos, y el piñón nº 5 engrana con una cremallera de paso constante. Datos: rueda 1 Dp₁ = 48 mm, Z₁ = 16, n₁ = 320 rpm; rueda 2 Dp₂ = 60 mm (engrana con la 1); rueda 3 Dp₃ = 36 mm (en el eje de la 2); rueda 4 Dp₄ = 56 mm, Z₄ = 28 (engrana con la 3); piñón 5 Z₅ = 14 (en el eje de la 4); paso de la cremallera p = 4 mm."
+  }
+}

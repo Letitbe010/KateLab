@@ -200,5 +200,11 @@
   "wk.power.what": "P = P_motorra · Πη = {pin} W · {eta} = {p} W; ω = 2π·n/60 = {w} rad/s; T = P/ω = {t} N·m",
   "wk.power.why": "Etapa bakoitzak bere errendimendua du; potentzia ez da handitzen. Abiadura jaistean momentua handitzen da.",
   "wk.power.careful": "ω rad/s-tan, ez rpm-tan; P W-tan (kW × 1000).",
-  "wk.summary.title": "Emaitzak"
+  "wk.summary.title": "Emaitzak",
+  "ask.pitchDiameter": "{what} pinoiaren diametro primitiboa",
+  "diag.pitch-as-module": "Kremaileraren pausoa modulua balitz bezala erabili duzu: p = π·m, beraz m = p/π eta d = p·Z/π.",
+  "sol.rackP": "{output}: v = p·Z·n = {p} · {z} · {n} mm/min = {v} mm/min = {vs} m/s",
+  "sol.pitchDiameter": "d = m·Z = {m} · {z} = {d} mm",
+  "sol.pitchDiameterP": "m = p/π; d = m·Z = p·Z/π = {p} · {z} / π = {d} mm",
+  "wk.rackP.what": "d = p·Z/π = {p} · {z} / π = {d} mm; v = p·Z·n = {p} · {z} · {n} = {v} mm/min = {vs} m/s"
 }

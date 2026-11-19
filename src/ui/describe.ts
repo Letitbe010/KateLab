@@ -28,6 +28,8 @@ export function elementName(ex: KinExercise, id: string): string {
       return `Ø${e.d1.n}/Ø${e.d2.n}`;
     case 'worm':
       return `${e.starts}/${e.z}`;
+    case 'rack':
+      return `Z = ${e.z}`;
     default:
       return id;
   }
@@ -62,6 +64,8 @@ export function askLabel(ex: KinExercise, ask: Ask, lang: Lang): string {
     }
     case 'gearGeometry':
       return t('ask.gearGeometry', { what: elementName(ex, ask.element) });
+    case 'pitchDiameter':
+      return t('ask.pitchDiameter', { what: elementName(ex, ask.element) });
     case 'missingTeeth':
       return t('ask.missingTeeth');
     case 'indexing':

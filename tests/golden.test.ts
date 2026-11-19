@@ -83,7 +83,7 @@ describe.each(cases.map((c) => [c.id, c] as const))('%s', (_id, c) => {
     it('pitch diameter', () => {
       const e = chain!.elements.find((x) => x.id === pd.element);
       if (!e || e.kind !== 'rack') throw new Error('rack expected');
-      expect(R.toString(pitchDiameter(e.module, e.z))).toBe(pd.value);
+      expect(R.toString(pitchDiameter(e.module!, e.z))).toBe(pd.value);
     });
 
   const ix = c.indexing as

@@ -39,10 +39,10 @@
     },
     {
       "id": "kremailera",
-      "pool": "elikadura-kremailera-1",
+      "pool": "ope-madrid-2025-7",
       "title": {
-        "eu": "Pinoi-kremailera (Madril 2025 estiloa)",
-        "es": "Piñón-cremallera (estilo Madrid 2025)"
+        "eu": "Pinoi-kremailera (Madril OPE 2025)",
+        "es": "Piñón-cremallera (OPE Madrid 2025)"
       },
       "review": "draft"
     },

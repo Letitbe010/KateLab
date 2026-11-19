@@ -37,8 +37,9 @@ export interface LinearStep {
   kind: 'rack' | 'screw';
   shaft: string;
   n: Rational;
-  /** rack: module and Z (v = π·m·Z·n); screw: pitch and starts (v = n·k·P). */
+  /** rack: module and Z (v = π·m·Z·n) or rack pitch (v = p·Z·n); screw: pitch and starts (v = n·k·P). */
   module?: Rational;
+  rackPitch?: Rational;
   z?: number;
   pitch?: Rational;
   starts?: number;
@@ -123,7 +124,7 @@ export function solutionData(ex: KinExercise): SolutionData {
     const v = sol.linear[e.output]!.v;
     linear.push(
       e.kind === 'rack'
-        ? { output: e.output, element: e.id, kind: 'rack', shaft: e.from, n, module: e.module, z: e.z, v }
+        ? { output: e.output, element: e.id, kind: 'rack', shaft: e.from, n, z: e.z, v, ...(e.module ? { module: e.module } : {}), ...(e.pitch ? { rackPitch: e.pitch } : {}) }
         : { output: e.output, element: e.id, kind: 'screw', shaft: e.from, n, pitch: e.pitch, starts: e.starts, v },
     );
   }
@@ -145,5 +146,6 @@ export function solutionData(ex: KinExercise): SolutionData {
 
 /** Linear speed recomputed from the step data (used by tests to check the formulas shown). */
 export function linearFromStep(s: LinearStep): PiRational {
-  return s.kind === 'rack' ? pr(mul(mul(s.module!, q(s.z!)), s.n), 1) : pr(mul(mul(s.pitch!, q(s.starts!)), s.n), 0);
+  if (s.kind === 'rack') return s.rackPitch ? pr(mul(mul(s.rackPitch, q(s.z!)), s.n), 0) : pr(mul(mul(s.module!, q(s.z!)), s.n), 1);
+  return pr(mul(mul(s.pitch!, q(s.starts!)), s.n), 0);
 }

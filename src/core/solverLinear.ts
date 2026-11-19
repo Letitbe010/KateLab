@@ -104,12 +104,13 @@ export function solveStateB(chain: Chain, state: State): StateSolution {
         r[S(e.from)] = neg(ONE);
         break;
       case 'rack': {
-        // v = π·m·Z·n  →  c − m·Z·n = 0, with v = c·π
+        // module: v = π·m·Z·n → c − m·Z·n = 0 with v = c·π ; rack pitch: v = p·Z·n → c − p·Z·n = 0 with v = c
+        const want = e.pitch ? 0 : 1;
         const p = piPow.get(e.output);
-        if (p !== undefined && p !== 1) return { ok: false, error: `Output ${e.output} mixes rack and screw drives` };
-        piPow.set(e.output, 1);
+        if (p !== undefined && p !== want) return { ok: false, error: `Output ${e.output} mixes drives with and without π` };
+        piPow.set(e.output, want);
         r[linIdx.get(e.output) as number] = ONE;
-        r[S(e.from)] = neg(mul(e.module, q(e.z)));
+        r[S(e.from)] = neg(mul((e.pitch ?? e.module) as Rational, q(e.z)));
         break;
       }
       case 'screw': {

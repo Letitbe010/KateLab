@@ -10,7 +10,7 @@
  */
 import { DEFAULT_GEARSET, checkCompound, checkSimple, compoundTrains, mountingOk, requiredRatio, simpleTrains } from './changeGears';
 import { compareSolutions } from './checks';
-import { centerDistance, clusterCenterDistance, gearGeometry } from './geometry';
+import { centerDistance, clusterCenterDistance, gearGeometry, rackPinionDiameter } from './geometry';
 import { checkIndexing, indexingSolutions } from './indexing';
 import { type Ask, type Chain, type Element, type KinExercise, type State, type StateSolution, activeElements, allStates, exerciseForAsk } from './model';
 import { powerAt } from './power';
@@ -58,6 +58,7 @@ export const FIELDS: Record<Ask['type'], string[]> = {
   feedPerMin: ['value'],
   centerDistance: ['value'],
   gearGeometry: ['d', 'da', 'df', 'h', 'p'],
+  pitchDiameter: ['value'],
   missingTeeth: ['value'],
   indexing: ['turns', 'holes', 'circle'],
   changeGears: ['za', 'zb', 'zc', 'zd'],
@@ -92,6 +93,7 @@ export type DiagCode =
   | 'gear-reused'
   | 'mounting-condition'
   | 'cluster-sum'
+  | 'pitch-as-module'
   | 'unknown';
 
 export interface Diagnosis {
@@ -152,6 +154,7 @@ export function unitsFor(ask: Ask): Unit[] {
       return ['mm/rev'];
     case 'centerDistance':
     case 'gearGeometry':
+    case 'pitchDiameter':
       return ['mm', 'm'];
     default:
       return [''];
@@ -442,6 +445,8 @@ function rawSpecs(ex: KinExercise, ask: Ask): NumericSpec[] {
       if (drive?.kind === 'rack') {
         alts.push({ code: 'rack-radius', value: prScale(v.v, q(1, 2)) });
         alts.push({ code: 'rack-radius', value: prScale(v.v, q(2)) });
+        // rack pitch read as the module: v = π·p·Z·n instead of p·Z·n
+        if (drive.pitch) alts.push({ code: 'pitch-as-module', value: pr(v.v.coef, v.v.piPower + 1) });
       }
       // feed per revolution given instead of per minute: the spindle is not named in this ask, so try every driven shaft
       if (ask.type === 'feedPerMin') {
@@ -494,6 +499,21 @@ function rawSpecs(ex: KinExercise, ask: Ask): NumericSpec[] {
       } else if (ask.element) a = fromGear(gearEl(ask.element));
       if (!a) throw new ExerciseError('centre distance undefined (module missing)');
       return [{ field: 'value', expected: pr(a), base: 'mm', alts }];
+    }
+    case 'pitchDiameter': {
+      const e = chain.elements.find((x) => x.id === ask.element);
+      if (e?.kind === 'rack') {
+        const d = rackPinionDiameter(e);
+        const alts: Alt[] = [{ code: 'rack-radius', value: prScale(d, q(1, 2)) }];
+        // rack pitch read as if it were the module: d = p·Z
+        if (e.pitch) alts.push({ code: 'pitch-as-module', value: pr(mul(e.pitch, q(e.z))) });
+        return [{ field: 'value', expected: d, base: 'mm', alts }];
+      }
+      if (e?.kind === 'gear' && e.module) {
+        const d = pr(mul(e.module, q(e.z1)));
+        return [{ field: 'value', expected: d, base: 'mm', alts: [{ code: 'rack-radius', value: prScale(d, q(1, 2)) }] }];
+      }
+      throw new ExerciseError('pitchDiameter needs a rack pinion or a gear with module');
     }
     case 'gearGeometry': {
       const e = chain.elements.find((x) => x.id === ask.element);

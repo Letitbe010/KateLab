@@ -79,7 +79,7 @@ export function chainArb(o: Opts = {}): fc.Arbitrary<ChainJSON> {
         clusterTeeth: fc.uniqueArray(fc.integer({ min: 17, max: 43 }), { minLength: 2, maxLength: 3 }),
         cluster2At: o.clusters ? fc.option(fc.integer({ min: 1, max: base.nShafts - 1 })) : fc.constant(null),
         linear: fc.array(
-          fc.record({ at: fc.nat(), rack: fc.boolean(), z: fc.integer({ min: 12, max: 60 }), m: fc.constantFrom(...MODULES), p: fc.constantFrom('1', '5/2', '4', '5', '6'), k: fc.integer({ min: 1, max: 3 }) }),
+          fc.record({ at: fc.nat(), rack: fc.boolean(), byPitch: fc.boolean(), z: fc.integer({ min: 12, max: 60 }), m: fc.constantFrom(...MODULES), p: fc.constantFrom('1', '5/2', '4', '5', '6'), k: fc.integer({ min: 1, max: 3 }) }),
           { maxLength: 2 },
         ),
         extra: o.loops ? fc.option(rotaryEdge('x1', 'S0', `S${base.nShafts - 1}`)) : fc.constant(null),
@@ -107,7 +107,9 @@ export function chainArb(o: Opts = {}): fc.Arbitrary<ChainJSON> {
           const from = `S${l.at % base.nShafts}`;
           elements.push(
             l.rack
-              ? { kind: 'rack', id: `r${j}`, from, output: `L${j}`, z: l.z, module: l.m }
+              ? l.byPitch
+                ? { kind: 'rack', id: `r${j}`, from, output: `L${j}`, z: l.z, pitch: l.p }
+                : { kind: 'rack', id: `r${j}`, from, output: `L${j}`, z: l.z, module: l.m }
               : { kind: 'screw', id: `r${j}`, from, output: `L${j}`, pitch: l.p, starts: l.k },
           );
         });
