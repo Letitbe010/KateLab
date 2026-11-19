@@ -8,7 +8,8 @@ import { centerDistance, rackPinionDiameter } from '../core/geometry';
 import { type AskResult, fmt, gradeAsk } from '../core/grader';
 import { indexingFraction } from '../core/indexing';
 import { type Ask, type KinExercise, exerciseForAsk } from '../core/model';
-import { pr, toString as rs } from '../core/rational';
+import { inv, pr, toString as rs } from '../core/rational';
+import { useProgress } from './progress';
 import { solutionData } from '../core/solution';
 import { mmPerMinToMPerS } from '../core/units';
 import { useT } from '../i18n';
@@ -54,6 +55,7 @@ function AskSolution({ ex, ask, index }: { ex: KinExercise; ask: Ask; index: num
   const expected: AskResult = gradeAsk(ex, ask, {});
   const multi = ask.type === 'indexing' || ask.type === 'changeGears' || ask.type === 'missingTeeth';
   const data = multi ? null : solutionData({ ...exA, asks: [ask] });
+  const showInv = useProgress().settings.showInverseRatio;
   const showState = ex.chain.clusters.length > 0 && STATE_ASKS.has(ask.type) && !(ask.type === 'feedPerRev' && ask.max);
   const formula = formulaLine(ex, ask, t);
   return (
@@ -139,6 +141,7 @@ function AskSolution({ ex, ask, index }: { ex: KinExercise; ask: Ask; index: num
               <span key={f.field} className="ans">
                 {expected.fields.length > 1 ? `${t(`field.${f.field}`)} = ` : ''}
                 {ask.type === 'direction' ? t(`dir.${f.expected}`) : f.expected}
+                {ask.type === 'ratio' && showInv && data?.paths[0] ? ` (${t('ex.ratioInverse', { v: `${rs(inv(data.paths[0].total))} ≈ ${fmt(pr(inv(data.paths[0].total)), 4)}` })})` : ''}
               </span>
             ))}
         {multi && expected.solutions && (

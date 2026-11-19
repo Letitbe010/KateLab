@@ -17,6 +17,8 @@ import { exerciseTitle } from './describe';
 import { KinematicSchema } from './KinematicSchema';
 import { hrefOf } from './router';
 import { SolutionSteps } from './SolutionSteps';
+import { defaultUnit } from './units';
+import { recordAttempts, useProgress } from './progress';
 
 export type ExerciseSource = { kind: 'generated'; archetype: string; seed: number } | { kind: 'pool'; id: string };
 
@@ -47,6 +49,7 @@ export function PracticeExercise({ source }: { source: ExerciseSource }) {
   const [answers, setAnswers] = useState<AskAnswer[]>([]);
   const [results, setResults] = useState<AskResult[] | undefined>();
   const [active, setActive] = useState(0);
+  const settings = useProgress().settings;
 
   if (!loaded.ok)
     return (
@@ -74,8 +77,22 @@ export function PracticeExercise({ source }: { source: ExerciseSource }) {
       return next;
     });
   const check = () => {
-    setResults(ex.asks.map((a, i) => gradeAsk(ex, a, answers[i] ?? {})));
+    const filled = ex.asks.map((a, i) => ({ ...(answers[i] ?? {}), unit: answers[i]?.unit ?? defaultUnit(a, settings) }));
+    const rs = ex.asks.map((a, i) => gradeAsk(ex, a, filled[i] ?? {}));
+    setResults(rs);
     setStep(2);
+    recordAttempts(
+      rs.map((r, i) => ({
+        ts: Date.now(),
+        exercise: ex.id,
+        ...(ex.archetype ? { archetype: ex.archetype } : {}),
+        origin: ex.origin,
+        level: ex.difficulty,
+        ask: ex.asks[i]!.type,
+        status: r.status,
+        diagnoses: r.diagnoses.map((d) => d.code),
+      })),
+    );
   };
   const ok = results?.filter((r) => r.status === 'correct').length ?? 0;
   const another = () => {
@@ -117,7 +134,7 @@ export function PracticeExercise({ source }: { source: ExerciseSource }) {
         </div>
       ) : (
         <>
-          <AnswerForm ex={ex} answers={answers} onChange={setField} results={results} active={active} onFocusAsk={setActive} disabled={step >= 2} />
+          <AnswerForm ex={ex} answers={answers.map((a, i) => ({ unit: defaultUnit(ex.asks[i]!, settings), ...(a ?? {}) }))} onChange={setField} results={results} active={active} onFocusAsk={setActive} disabled={step >= 2} />
           <div className="actions">
             {step === 1 && (
               <button className="primary" onClick={check}>

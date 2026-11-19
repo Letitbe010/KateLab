@@ -5,7 +5,7 @@
     "eu": "Madril OPE 2025 — Prentsaren elikadura-sistema",
     "es": "OPE Madrid 2025 — Sistema de alimentación de la prensa"
   },
-  "sourceNote": "Madril OPE 2025, 0590-112, 7. ariketa (0,75 puntu). Erabiltzaileak emandako orri-argazkitik modelatua. Z₂ eta Z₃ ez dira enuntziatuan ematen: Dp eta engranatzen den gurpilaren modulutik ateratakoak dira (m = 48/16 = 3 → Z₂ = 60/3 = 20; m = 56/28 = 2 → Z₃ = 36/2 = 18). Kremaileraren pausoa p = 4 mm da (modulua m = p/π, ez normalizatua).",
+  "sourceNote": "Madril OPE 2025, 0590-112, 7. ariketa (0,75 puntu). Erabiltzaileak emandako orri-argazkitik modelatua. Z₂ eta Z₃ ez dira enuntziatuan ematen: Dp eta engranatzen den gurpilaren modulutik ateratakoak dira (m = 48/16 = 3 → Z₂ = 60/3 = 20; m = 56/28 = 2 → Z₃ = 36/2 = 18). Kremaileraren pausoa p = 4 mm da (modulua m = p/π, ez normalizatua). Irakurketa (p = 4 mm pausoa, m = 4/π) erabiltzaileak baieztatua 2026-11-19; enuntziatuaren testua berrikusteko.",
   "sourceUrl": "https://www.comunidad.madrid/docs/assets/2025/06/21/rh03_257_2025_exam_590112.pdf",
   "difficulty": 2,
   "archetype": "elikadura-kremailera",

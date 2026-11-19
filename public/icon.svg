@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#0f1b2d"/>
+  <!-- two shafts and a meshing pair seen edge-on, as in the app's schemas -->
+  <line x1="96" y1="176" x2="416" y2="176" stroke="#e7ecf3" stroke-width="18" stroke-linecap="round"/>
+  <line x1="96" y1="352" x2="416" y2="352" stroke="#e7ecf3" stroke-width="18" stroke-linecap="round"/>
+  <rect x="196" y="112" width="44" height="128" rx="6" fill="#ffd29a" stroke="#d97706" stroke-width="8"/>
+  <rect x="196" y="240" width="44" height="176" rx="6" fill="#ffd29a" stroke="#d97706" stroke-width="8"/>
+  <rect x="300" y="150" width="44" height="52" rx="6" fill="#dbe7fb" stroke="#7fb0ff" stroke-width="8"/>
+  <rect x="300" y="202" width="44" height="200" rx="6" fill="#dbe7fb" stroke="#7fb0ff" stroke-width="8"/>
+</svg>

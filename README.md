@@ -17,6 +17,7 @@
 | 6 | UI: Praktika (erantzun-formularioa, zuzenketa, ebazpena), eu/es | KG1 eta KG3 mugikorrean (390 px) bi hizkuntzetan: e2e berde |
 | 7 | Ariketa ebatziak (11), urratsez urrats, zer/zergatik/kontuz | Zenbaki-testak berde (zenbaki guztiak ebazletik) |
 | 8 | Teoria (13 gai, eu/es) + 3 widget + KaTeX | Formula-testak berde (1000 kasu formula bakoitzeko) |
+| 9 | Ikasbidea, sarrera, aurrerapena, ezarpenak, modu iluna, Honi buruz, PWA | Lighthouse: irisgarritasuna 100, errendimendua 99; lineaz kanpo dabil; §13.4 proba berde (tools/usability.mjs) |
 
 ## Komandoak / Comandos
 

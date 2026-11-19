@@ -1,6 +1,7 @@
 /**
  * Hash router (GitHub Pages has no SPA routing, spec §13.1).
- *   #/                                   → practice home (for now)
+ *   #/                                   → learning path (start)
+ *   #/aurrerapena, #/ezarpenak, #/honi-buruz → progress, settings, about
  *   #/praktika                           → practice home
  *   #/praktika/<archetype>/seed/<n>      → generated exercise
  *   #/praktika/pool/<id>                 → pool exercise
@@ -11,6 +12,10 @@
 import { useEffect, useState } from 'react';
 
 export type Route =
+  | { name: 'start' }
+  | { name: 'progress' }
+  | { name: 'settings' }
+  | { name: 'about' }
   | { name: 'home' }
   | { name: 'generated'; archetype: string; seed: number }
   | { name: 'pool'; id: string }
@@ -29,8 +34,11 @@ export function parseHash(hash: string): Route {
   if (parts[0] === 'eskemak') return { name: 'schemas' };
   if (parts[0] === 'ebatziak') return parts[1] ? { name: 'workedItem', id: parts[1] } : { name: 'worked' };
   if (parts[0] === 'teoria') return parts[1] ? { name: 'theoryTopic', id: parts[1] } : { name: 'theory' };
-  if (parts[0] && ['aurrerapena'].includes(parts[0])) return { name: 'soon', section: parts[0] };
-  return { name: 'home' };
+  if (parts[0] === 'aurrerapena') return { name: 'progress' };
+  if (parts[0] === 'ezarpenak') return { name: 'settings' };
+  if (parts[0] === 'honi-buruz') return { name: 'about' };
+  if (parts[0] === 'praktika') return { name: 'home' };
+  return { name: 'start' };
 }
 
 export const hrefOf = (r: Route): string => {
@@ -51,6 +59,14 @@ export const hrefOf = (r: Route): string => {
       return `#/ebatziak/${encodeURIComponent(r.id)}`;
     case 'soon':
       return `#/${r.section}`;
+    case 'start':
+      return '#/';
+    case 'progress':
+      return '#/aurrerapena';
+    case 'settings':
+      return '#/ezarpenak';
+    case 'about':
+      return '#/honi-buruz';
     default:
       return '#/praktika';
   }

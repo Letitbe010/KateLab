@@ -7,7 +7,17 @@ import { mkdirSync } from 'node:fs';
 const base = process.argv[2] ?? 'http://localhost:5173/KateLab/';
 const out = process.argv[3] ?? 'screenshots/e2e';
 mkdirSync(out, { recursive: true });
-const browser = await chromium.launch({ channel: 'msedge' }).catch(() => chromium.launch({ channel: 'chrome' }));
+const launched = await chromium.launch({ channel: 'msedge' }).catch(() => chromium.launch({ channel: 'chrome' }));
+// every page starts with the first-visit intro already seen (the intro itself is tested below)
+const SEEN = `localStorage.setItem('katelab.progress.v1', JSON.stringify({ version: 1, attempts: [], theorySeen: [], workedDone: [], introSeen: true, settings: { theme: 'auto', showInverseRatio: false, speedUnit: 'rpm', linearUnit: 'mm/min' } }))`;
+const browser = {
+  newPage: async (opts) => {
+    const p = await launched.newPage(opts);
+    await p.addInitScript(`if (!sessionStorage.getItem('e2e')) { sessionStorage.setItem('e2e', '1'); ${SEEN} }`);
+    return p;
+  },
+  close: () => launched.close(),
+};
 let failures = 0;
 const check = (cond, msg) => {
   console.log(`${cond ? 'OK  ' : 'FAIL'} ${msg}`);
@@ -116,10 +126,12 @@ const th = await browser.newPage({ viewport: { width: 390, height: 844 } });
 const therr = [];
 th.on('pageerror', (e) => therr.push(e.message));
 await th.goto(base + '#/teoria');
+await th.locator('.topic-list a').first().waitFor(); // theory is lazy-loaded
 const tl = await th.locator('.topic-list a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
 check(tl.length === 13, `theory list has 13 topics (${tl.length})`);
 for (const h of tl) {
   await th.goto(base + h);
+  await th.locator('.theory').waitFor();
   const tex = await th.locator('.katex').count();
   const unfilled = (await th.locator('.theory').innerText()).includes('{{');
   check(therr.length === 0 && !unfilled, `${h}: ${tex} formulas, examples filled${therr.length ? ' — ' + therr.join('; ') : ''}`);
@@ -133,6 +145,39 @@ for (const h of tl) {
   }
 }
 await th.close();
+
+// first visit: intro shown, can be skipped, not shown again; the learning path is the home
+{
+  const ctx = await launched.newContext({ viewport: { width: 390, height: 844 } });
+  const p = await ctx.newPage();
+  await p.goto(base);
+  check(await p.getByRole('dialog').isVisible(), 'first visit: intro dialog shown');
+  await p.getByRole('button', { name: 'Hurrengoa' }).click();
+  await p.getByRole('button', { name: 'Hurrengoa' }).click();
+  await p.getByRole('button', { name: 'Hasi' }).click();
+  check((await p.getByRole('dialog').count()) === 0, 'intro closed');
+  await p.reload();
+  check((await p.getByRole('dialog').count()) === 0, 'intro not shown again');
+  check(await p.getByRole('heading', { name: 'Ikasbidea' }).isVisible(), 'home is the learning path');
+  // progress is recorded: answer KG1 and see it on the progress page
+  await p.goto(base + '#/praktika/pool/oinarria-kg1');
+  await p.getByRole('button', { name: 'Ebazten hasi' }).click();
+  await p.locator('.ask input').nth(0).fill('5760');
+  await p.getByRole('button', { name: 'Zuzendu' }).click();
+  await p.goto(base + '#/aurrerapena');
+  const ptxt = await p.locator('main').innerText();
+  check(ptxt.includes('Erantzunak guztira: 1') && ptxt.includes('alderantziz'), 'progress page shows the attempts and the most common mistake');
+  await p.goto(base);
+  check(await p.getByRole('link', { name: /Jarraitu utzi duzun tokitik/ }).isVisible(), '"continue where you left off" button');
+  // dark theme from the settings
+  await p.goto(base + '#/ezarpenak');
+  await p.getByRole('radio', { name: 'Iluna' }).click();
+  check((await p.evaluate(() => document.documentElement.dataset.theme)) === 'dark', 'dark theme applied');
+  await p.screenshot({ path: `${out}/eu_settings_dark.png`, fullPage: true });
+  await p.goto(base + '#/honi-buruz');
+  check(/0\.\d+\.\d+/.test(await p.locator('main').innerText()), 'about page shows the version');
+  await ctx.close();
+}
 
 // desktop view of the home and of the milling exercise
 const d = await browser.newPage({ viewport: { width: 1280, height: 900 } });

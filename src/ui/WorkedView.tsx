@@ -3,7 +3,8 @@
  * what / why / careful; the power path lights up step by step on the schema and
  * the speed of each shaft appears as it is computed. At the end: "now you".
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { markWorked } from './progress';
 import worked from '../data/worked.json';
 import { poolById } from '../data/pool';
 import { useT } from '../i18n';
@@ -47,6 +48,10 @@ export function WorkedItem({ id }: { id: string }) {
   const ex = entry ? poolById(entry.pool) : undefined;
   const steps = useMemo(() => (ex ? buildWorked(ex, lang) : []), [ex, lang]);
   const [shown, setShown] = useState(1);
+  const finished = steps.length > 0 && shown >= steps.length;
+  useEffect(() => {
+    if (finished && entry) markWorked(entry.id);
+  }, [finished, entry]);
   if (!entry || !ex)
     return (
       <section className="card">

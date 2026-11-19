@@ -1,11 +1,16 @@
-import { useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
+
+// theory (KaTeX + texts) is loaded only when opened
+const TheoryList = lazy(() => import('./theory/TheoryView').then((m) => ({ default: m.TheoryList })));
+const TheoryTopic = lazy(() => import('./theory/TheoryView').then((m) => ({ default: m.TheoryTopic })));
 import { type Lang, LangContext, translate } from '../i18n';
 import { PracticeExercise } from './PracticeExercise';
 import { PracticeHome } from './PracticeHome';
 import { type Route, hrefOf, useRoute } from './router';
 import { SchemaGallery } from './SchemaGallery';
 import { WorkedItem, WorkedList } from './WorkedView';
-import { TheoryList, TheoryTopic } from './theory/TheoryView';
+import { AboutPage, Intro, ProgressPage, SettingsPage, StartPage } from './pages';
+import { setLastRoute, useProgress } from './progress';
 
 const LANG_KEY = 'katelab.lang';
 
@@ -22,7 +27,7 @@ const NAV: { key: string; route: Route; icon: string }[] = [
   { key: 'nav.theory', route: { name: 'theory' }, icon: 'T' },
   { key: 'nav.worked', route: { name: 'worked' }, icon: 'E' },
   { key: 'nav.practice', route: { name: 'home' }, icon: 'P' },
-  { key: 'nav.progress', route: { name: 'soon', section: 'aurrerapena' }, icon: 'A' },
+  { key: 'nav.progress', route: { name: 'progress' }, icon: 'A' },
 ];
 
 const sectionOf = (r: Route): string =>
@@ -34,7 +39,11 @@ const sectionOf = (r: Route): string =>
         ? 'ebatziak'
         : r.name === 'theory' || r.name === 'theoryTopic'
           ? 'teoria'
-          : 'praktika';
+          : r.name === 'progress'
+            ? 'aurrerapena'
+            : r.name === 'start' || r.name === 'settings' || r.name === 'about'
+              ? r.name
+              : 'praktika';
 
 export function App() {
   const [lang, setLang] = useState<Lang>(loadLang);
@@ -49,12 +58,21 @@ export function App() {
     }
   }, [lang]);
   const current = sectionOf(route);
+  const progress = useProgress();
+  const theme = progress.settings.theme;
+  useEffect(() => {
+    if (theme === 'auto') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+  useEffect(() => {
+    if (['generated', 'pool', 'workedItem', 'theoryTopic'].includes(route.name)) setLastRoute(hrefOf(route));
+  }, [route]);
 
   return (
     <LangContext.Provider value={lang}>
       <div className="app">
         <nav className="side" aria-label="Nabigazioa">
-          <a className="brand" href="#/praktika">
+          <a className="brand" href="#/">
             <small>{t('app.kicker')}</small>
             <b>KateLab</b>
           </a>
@@ -76,8 +94,14 @@ export function App() {
         </nav>
         <div className="main">
           <header className="top">
-            <a className="brand mobile-only" href="#/praktika">
+            <a className="brand mobile-only" href="#/" aria-label={t('nav.home')}>
               <b>KateLab</b>
+            </a>
+            <a className="home-link" href="#/" aria-current={current === 'start' ? 'page' : undefined}>
+              {t('nav.home')}
+            </a>
+            <a className="settings-link" href={hrefOf({ name: 'settings' })} aria-current={current === 'settings' ? 'page' : undefined}>
+              {t('nav.settings')}
             </a>
             <div className="lang" role="group" aria-label="Hizkuntza / Idioma">
               {(['eu', 'es'] as const).map((l) => (
@@ -88,12 +112,18 @@ export function App() {
             </div>
           </header>
           <main>
+            {route.name === 'start' && <StartPage />}
+            {route.name === 'progress' && <ProgressPage />}
+            {route.name === 'settings' && <SettingsPage setLang={setLang} />}
+            {route.name === 'about' && <AboutPage />}
             {route.name === 'home' && <PracticeHome />}
             {route.name === 'generated' && <PracticeExercise key={`${route.archetype}-${route.seed}`} source={{ kind: 'generated', archetype: route.archetype, seed: route.seed }} />}
             {route.name === 'pool' && <PracticeExercise key={route.id} source={{ kind: 'pool', id: route.id }} />}
             {route.name === 'schemas' && <SchemaGallery lang={lang} />}
-            {route.name === 'theory' && <TheoryList />}
-            {route.name === 'theoryTopic' && <TheoryTopic key={route.id} id={route.id} />}
+            <Suspense fallback={<p className="note">…</p>}>
+              {route.name === 'theory' && <TheoryList />}
+              {route.name === 'theoryTopic' && <TheoryTopic key={route.id} id={route.id} />}
+            </Suspense>
             {route.name === 'worked' && <WorkedList />}
             {route.name === 'workedItem' && <WorkedItem key={route.id} id={route.id} />}
             {route.name === 'soon' && (
@@ -104,6 +134,7 @@ export function App() {
             )}
           </main>
         </div>
+        {!progress.introSeen && <Intro />}
         <nav className="bottom" aria-label="Nabigazioa">
           {NAV.map((n) => {
             const on = sectionOf(n.route) === current;
