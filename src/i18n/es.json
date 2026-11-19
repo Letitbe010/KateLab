@@ -268,5 +268,21 @@
   "about.url": "Dirección",
   "about.license": "Licencia: código MIT; contenido CC BY-SA 4.0.",
   "about.sources": "Fuentes: OPE Euskadi 2020 (1508) y OPE Madrid 2025 (0590-112), verificadas por el usuario; juegos de platos divisores verificados en materiales de TTE-LISA y US Army OD1644. Los textos son borradores hasta su revisión.",
-  "ex.ratioInverse": "1/i = {v}"
+  "ex.ratioInverse": "1/i = {v}",
+  "rev.title": "Para revisar",
+  "rev.lead": "Solo en modo desarrollo. Abre cada elemento, léelo y apruébalo o escribe una nota de corrección. Los cambios se guardan en los archivos de datos.",
+  "rev.devOnly": "Esta pantalla solo está disponible en modo desarrollo (npm run dev).",
+  "rev.tab.pool": "Ejercicios",
+  "rev.tab.worked": "Resueltos",
+  "rev.tab.theory": "Teoría",
+  "rev.open": "Abrir",
+  "rev.approve": "Aprobar",
+  "rev.reopen": "Para revisar",
+  "rev.note": "Nota de corrección",
+  "rev.saveNote": "Guardar nota",
+  "rev.saved": "Guardado.",
+  "rev.error": "No se ha podido guardar: {e}",
+  "rev.notes": "Notas guardadas",
+  "rev.reviewed": "Revisado",
+  "rev.pending": "Para revisar"
 }

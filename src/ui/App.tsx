@@ -10,6 +10,7 @@ import { type Route, hrefOf, useRoute } from './router';
 import { SchemaGallery } from './SchemaGallery';
 import { WorkedItem, WorkedList } from './WorkedView';
 import { AboutPage, Intro, ProgressPage, SettingsPage, StartPage } from './pages';
+import { ReviewPage } from './ReviewPage';
 import { setLastRoute, useProgress } from './progress';
 
 const LANG_KEY = 'katelab.lang';
@@ -41,7 +42,7 @@ const sectionOf = (r: Route): string =>
           ? 'teoria'
           : r.name === 'progress'
             ? 'aurrerapena'
-            : r.name === 'start' || r.name === 'settings' || r.name === 'about'
+            : r.name === 'start' || r.name === 'settings' || r.name === 'about' || r.name === 'review'
               ? r.name
               : 'praktika';
 
@@ -116,6 +117,7 @@ export function App() {
             {route.name === 'progress' && <ProgressPage />}
             {route.name === 'settings' && <SettingsPage setLang={setLang} />}
             {route.name === 'about' && <AboutPage />}
+            {route.name === 'review' && (import.meta.env.DEV ? <ReviewPage /> : <p className="note">{t('rev.devOnly')}</p>)}
             {route.name === 'home' && <PracticeHome />}
             {route.name === 'generated' && <PracticeExercise key={`${route.archetype}-${route.seed}`} source={{ kind: 'generated', archetype: route.archetype, seed: route.seed }} />}
             {route.name === 'pool' && <PracticeExercise key={route.id} source={{ kind: 'pool', id: route.id }} />}

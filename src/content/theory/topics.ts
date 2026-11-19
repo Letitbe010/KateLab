@@ -4,6 +4,7 @@
  * {{…}} variables computed by the solver (src/core/template.ts).
  */
 import type { ChainJSON } from '../../core/model';
+import status from './status.json';
 import type { Topic } from './types';
 
 const S = (...ids: string[]) => ids.map((id) => ({ id, label: id }));
@@ -93,7 +94,7 @@ const POWER: ChainJSON = {
 };
 const KG10: ChainJSON = { shafts: S('A'), elements: [], input: { shaft: 'A', n: '320', power: '1100' } };
 
-export const TOPICS: Topic[] = [
+const RAW_TOPICS: Topic[] = [
   {
     id: 'eskemak',
     title: { eu: 'Transmisio-elementuak eta eskema zinematikoa', es: 'Elementos de transmisión y esquema cinemático' },
@@ -473,3 +474,6 @@ export const TOPICS: Topic[] = [
     ],
   },
 ];
+
+/** Topics with their review status from status.json. */
+export const TOPICS: Topic[] = RAW_TOPICS.map((t) => ({ ...t, status: (status.status as Record<string, string>)[t.id] === 'reviewed' ? 'reviewed' : 'draft' }));

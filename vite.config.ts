@@ -1,9 +1,11 @@
 /// <reference types="vitest" />
 import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { reviewPlugin } from './tools/review-plugin';
 
 const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf8')) as { version: string };
 function commit(): string {
@@ -27,6 +29,7 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    reviewPlugin(fileURLToPath(new URL('.', import.meta.url))),
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'auto',

@@ -316,6 +316,11 @@ export function SettingsPage({ setLang }: { setLang: (l: Lang) => void }) {
       <p>
         <a href={hrefOf({ name: 'about' })}>{t('nav.about')} →</a>
       </p>
+      {import.meta.env.DEV && (
+        <p>
+          <a href={hrefOf({ name: 'review' })}>{t('rev.title')} →</a>
+        </p>
+      )}
     </section>
   );
 }

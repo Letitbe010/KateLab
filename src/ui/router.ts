@@ -16,6 +16,7 @@ export type Route =
   | { name: 'progress' }
   | { name: 'settings' }
   | { name: 'about' }
+  | { name: 'review' }
   | { name: 'home' }
   | { name: 'generated'; archetype: string; seed: number }
   | { name: 'pool'; id: string }
@@ -37,6 +38,7 @@ export function parseHash(hash: string): Route {
   if (parts[0] === 'aurrerapena') return { name: 'progress' };
   if (parts[0] === 'ezarpenak') return { name: 'settings' };
   if (parts[0] === 'honi-buruz') return { name: 'about' };
+  if (parts[0] === 'berrikusi') return { name: 'review' };
   if (parts[0] === 'praktika') return { name: 'home' };
   return { name: 'start' };
 }
@@ -67,6 +69,8 @@ export const hrefOf = (r: Route): string => {
       return '#/ezarpenak';
     case 'about':
       return '#/honi-buruz';
+    case 'review':
+      return '#/berrikusi';
     default:
       return '#/praktika';
   }

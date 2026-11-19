@@ -268,5 +268,21 @@
   "about.url": "Helbidea",
   "about.license": "Lizentzia: kodea MIT; edukia CC BY-SA 4.0.",
   "about.sources": "Iturriak: Euskadiko OPE 2020 (1508) eta Madrilgo OPE 2025 (0590-112), erabiltzaileak egiaztatuak; plater zatitzaileen multzoak TTE-LISA eta US Army OD1644 materialetan egiaztatuak. Testuak zirriborroak dira berrikusi arte.",
-  "ex.ratioInverse": "1/i = {v}"
+  "ex.ratioInverse": "1/i = {v}",
+  "rev.title": "Berrikusteko",
+  "rev.lead": "Garapen-moduan bakarrik. Ireki elementu bakoitza, irakurri, eta onartu edo idatzi zuzenketa-ohar bat. Aldaketak datu-fitxategietan gordetzen dira.",
+  "rev.devOnly": "Pantaila hau garapen-moduan bakarrik dago erabilgarri (npm run dev).",
+  "rev.tab.pool": "Ariketak",
+  "rev.tab.worked": "Ebatziak",
+  "rev.tab.theory": "Teoria",
+  "rev.open": "Ireki",
+  "rev.approve": "Onartu",
+  "rev.reopen": "Berrikusteko",
+  "rev.note": "Zuzenketa-oharra",
+  "rev.saveNote": "Gorde oharra",
+  "rev.saved": "Gordeta.",
+  "rev.error": "Ezin izan da gorde: {e}",
+  "rev.notes": "Gordetako oharrak",
+  "rev.reviewed": "Berrikusia",
+  "rev.pending": "Berrikusteko"
 }

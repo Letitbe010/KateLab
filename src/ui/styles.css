@@ -223,3 +223,12 @@ a.button.primary { background: var(--ink); color: var(--card); border-color: var
 .intro h2 { margin: 4px 0 8px; font-size: 21px; }
 .settings .choice button { min-width: 120px; }
 code { font-size: 14px; }
+
+/* ---------- review screen (dev only) ---------- */
+.rev-list { list-style: none; padding: 0; display: grid; gap: 10px; margin-top: 12px; }
+.rev-row { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; background: var(--surface); }
+.rev-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.rev-head a { margin-left: auto; min-height: 44px; display: inline-flex; align-items: center; }
+.rev-note { width: 100%; margin-top: 6px; }
+.rev-note textarea { font: inherit; width: 100%; padding: 8px 10px; border: 1px solid var(--muted); border-radius: 8px; background: var(--surface); color: var(--ink); }
+.rev-notes { margin: 4px 0 0; font-size: 14.5px; }

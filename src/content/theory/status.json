@@ -1,0 +1,18 @@
+{
+  "_comment": "Review status of each theory topic (spec §14.3). Edited from the review screen (#/berrikusi, dev only).",
+  "status": {
+    "eskemak": "draft",
+    "erlazioa": "draft",
+    "trenak": "draft",
+    "poleak": "draft",
+    "torlojua": "draft",
+    "geometria": "draft",
+    "kaxak": "draft",
+    "translazioa": "draft",
+    "aitzinapena": "draft",
+    "zatiketa": "draft",
+    "aldaketa": "draft",
+    "potentzia": "draft",
+    "akatsak": "draft"
+  }
+}
