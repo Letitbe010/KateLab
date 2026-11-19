@@ -1,0 +1,163 @@
+{
+  "_comment": "Basic exercises built on the spec golden cases KG1 and KG3 (§11.2). Statements are drafts.",
+  "exercises": [
+    {
+      "id": "oinarria-kg1",
+      "origin": "adapted",
+      "sourceNote": "Argibideetako KG1 golden kasua (bi etapako trena).",
+      "difficulty": 1,
+      "review": "review-needed",
+      "chain": {
+        "shafts": [
+          {
+            "id": "I",
+            "label": "I"
+          },
+          {
+            "id": "II",
+            "label": "II"
+          },
+          {
+            "id": "III",
+            "label": "III"
+          }
+        ],
+        "elements": [
+          {
+            "kind": "gear",
+            "id": "g12",
+            "from": "I",
+            "to": "II",
+            "z1": 20,
+            "z2": 40
+          },
+          {
+            "kind": "gear",
+            "id": "g23",
+            "from": "II",
+            "to": "III",
+            "z1": 25,
+            "z2": 50
+          }
+        ],
+        "input": {
+          "shaft": "I",
+          "n": "1440",
+          "direction": "cw"
+        },
+        "viewpoint": {
+          "eu": "motorraren aldetik begiratuta",
+          "es": "mirando desde el motor"
+        }
+      },
+      "asks": [
+        {
+          "type": "speed",
+          "shaft": "III"
+        },
+        {
+          "type": "ratio",
+          "from": "I",
+          "to": "III"
+        },
+        {
+          "type": "direction",
+          "shaft": "III"
+        }
+      ],
+      "text": {
+        "eu": "Motor batek I ardatza 1440 rpm-tan biratzen du, erlojuaren orratzen noranzkoan (motorraren aldetik begiratuta). Bi engranaje-pareren bidez transmititzen da higidura III ardatzeraino. Hortz kopuruak eskeman daude.",
+        "es": "Un motor hace girar el eje I a 1440 rpm en sentido horario (mirando desde el motor). El movimiento llega al eje III mediante dos pares de engranajes. Los números de dientes figuran en el esquema."
+      },
+      "title": {
+        "eu": "Bi etapako engranaje-trena",
+        "es": "Tren de engranajes de dos etapas"
+      }
+    },
+    {
+      "id": "oinarria-kg3",
+      "origin": "adapted",
+      "sourceNote": "Argibideetako KG3 golden kasua (3 abiadurako kaxa).",
+      "difficulty": 2,
+      "review": "review-needed",
+      "chain": {
+        "shafts": [
+          {
+            "id": "I",
+            "label": "I"
+          },
+          {
+            "id": "II",
+            "label": "II"
+          }
+        ],
+        "elements": [
+          {
+            "kind": "gear",
+            "id": "a",
+            "from": "I",
+            "to": "II",
+            "z1": 20,
+            "z2": 60,
+            "module": "2"
+          },
+          {
+            "kind": "gear",
+            "id": "b",
+            "from": "I",
+            "to": "II",
+            "z1": 30,
+            "z2": 50,
+            "module": "2"
+          },
+          {
+            "kind": "gear",
+            "id": "c",
+            "from": "I",
+            "to": "II",
+            "z1": 40,
+            "z2": 40,
+            "module": "2"
+          }
+        ],
+        "clusters": [
+          {
+            "id": "K",
+            "label": "K",
+            "options": [
+              "a",
+              "b",
+              "c"
+            ]
+          }
+        ],
+        "input": {
+          "shaft": "I",
+          "n": "1200"
+        }
+      },
+      "asks": [
+        {
+          "type": "speedMaxMin",
+          "shaft": "II"
+        },
+        {
+          "type": "speedCount",
+          "shaft": "II"
+        },
+        {
+          "type": "centerDistance",
+          "cluster": "K"
+        }
+      ],
+      "text": {
+        "eu": "Abiadura-kaxa honetan I ardatza 1200 rpm-tan biratzen da. I eta II ardatzen artean hiru posizioko gurpil-multzo labainkor bat dago (20/60, 30/50, 40/40); gurpil guztien modulua m = 2 mm da.",
+        "es": "En esta caja de velocidades el eje I gira a 1200 rpm. Entre los ejes I y II hay un tren desplazable de tres posiciones (20/60, 30/50, 40/40); todas las ruedas tienen módulo m = 2 mm."
+      },
+      "title": {
+        "eu": "3 abiadurako kaxa",
+        "es": "Caja de 3 velocidades"
+      }
+    }
+  ]
+}

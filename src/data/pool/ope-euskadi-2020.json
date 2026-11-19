@@ -610,5 +610,9 @@
   "text": {
     "eu": "Fresagailu baten mekanismoak: ardatz nagusia (III), mahaia eta zeharkako gurdia. Motorrak 1500 rpm-tan biratzen du, eta Ø100/Ø360 uhalaren bidez I ardatza eragiten du. Abiadura-kaxak hiru gurpil-multzo labainkor ditu. Aitzinapen-katea IV ardatzetik abiatzen da (Ø15/Ø15 uhala, kardana, Z17/Z18 konikoak, sarrera bakarreko torloju amaigabea eta Z19 gurpila). Bi torlojuen pausoa 5 mm da. Hortz kopuruak elementuen taulan daude.",
     "es": "Mecanismos de una fresadora: eje principal (III), mesa y carro transversal. El motor gira a 1500 rpm y acciona el eje I mediante la correa Ø100/Ø360. La caja de velocidades tiene tres trenes desplazables. La cadena de avances parte del eje IV (correa Ø15/Ø15, cardán, cónicos Z17/Z18, tornillo sinfín de una entrada y corona Z19). Los dos husillos tienen paso 5 mm. Los números de dientes figuran en la tabla de elementos."
+  },
+  "title": {
+    "eu": "Euskadi OPE 2020 — Fresagailuaren kate zinematikoa",
+    "es": "OPE Euskadi 2020 — Cadena cinemática de la fresadora"
   }
 }

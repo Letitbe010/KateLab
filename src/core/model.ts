@@ -158,6 +158,7 @@ export interface KinExercise {
   text: { eu: string; es: string };
   review?: 'draft' | 'review-needed' | 'reviewed';
   archetype?: string;
+  title?: { eu: string; es: string };
 }
 
 /** Exercise with the state that applies to one ask (the ask's own state wins). */
