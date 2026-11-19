@@ -122,7 +122,13 @@ export type StateSolution =
 // Exercises and asks (spec §7). The grader (phase 4) consumes these.
 // ---------------------------------------------------------------------------
 
-export type Ask =
+/**
+ * An ask may carry its own cluster state (exam questions often use a different
+ * position per question, e.g. Euskadi 2020 a) and c)); otherwise the exercise state applies.
+ */
+export type Ask = AskBase & { state?: State; label?: { eu: string; es: string } };
+
+export type AskBase =
   | { type: 'speed'; shaft: ShaftId }
   | { type: 'speedMaxMin'; shaft: ShaftId }
   | { type: 'speedCount'; shaft: ShaftId }
@@ -151,7 +157,44 @@ export interface KinExercise {
   data?: { platesHoles?: number[][]; changeGears?: number[]; K?: number };
   text: { eu: string; es: string };
   review?: 'draft' | 'review-needed' | 'reviewed';
+  archetype?: string;
 }
+
+/** Exercise with the state that applies to one ask (the ask's own state wins). */
+export const exerciseForAsk = (ex: KinExercise, ask: Ask): KinExercise => (ask.state ? { ...ex, state: ask.state } : ex);
+
+// JSON form of an exercise: rationals in asks as strings.
+export type AskJSON = Record<string, unknown> & { type: Ask['type'] };
+export interface KinExerciseJSON extends Omit<KinExercise, 'chain' | 'asks'> {
+  chain: ChainJSON;
+  asks: AskJSON[];
+}
+
+export function askFromJSON(a: AskJSON): Ask {
+  const o = { ...a } as Record<string, unknown>;
+  if (a.type === 'changeGears') {
+    o.threadPitch = from(String(a.threadPitch));
+    o.leadScrewPitch = from(String(a.leadScrewPitch));
+  }
+  if (a.type === 'missingTeeth') {
+    const t = a.target as { shaft: string; n: string };
+    o.target = { shaft: t.shaft, n: from(String(t.n)) };
+  }
+  return o as unknown as Ask;
+}
+
+export function askToJSON(a: Ask): AskJSON {
+  const o = { ...a } as Record<string, unknown>;
+  if (a.type === 'changeGears') {
+    o.threadPitch = toString(a.threadPitch);
+    o.leadScrewPitch = toString(a.leadScrewPitch);
+  }
+  if (a.type === 'missingTeeth') o.target = { shaft: a.target.shaft, n: toString(a.target.n) };
+  return o as AskJSON;
+}
+
+export const exerciseFromJSON = (j: KinExerciseJSON): KinExercise => ({ ...j, chain: chainFromJSON(j.chain), asks: j.asks.map(askFromJSON) });
+export const exerciseToJSON = (e: KinExercise): KinExerciseJSON => ({ ...e, chain: chainToJSON(e.chain), asks: e.asks.map(askToJSON) });
 
 // ---------------------------------------------------------------------------
 // JSON form: rationals are written as strings ("2,5", "3/4", "1440").

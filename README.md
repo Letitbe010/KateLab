@@ -13,6 +13,7 @@
 | 2 | A eta B ebazleak, `checks.ts`, Python orakulua | KG1–KG10 eta property testak berde |
 | 3 | Eskema zinematikoa (SVG) + layout automatikoa eta eskuzkoa | Erabiltzaileak onartua (2026-11-19) |
 | 4 | Zuzentzailea (soluzio anitzekoak barne) + diagnostikoa + ebazpen-datuak | Testak berde |
+| 5 | Sorgailua (10 arketipo) + pool-a (Euskadi 2020 + sortutakoak) | 10 000 ariketa egiaztatuta; pool-a orakuluarekin |
 
 ## Komandoak / Comandos
 

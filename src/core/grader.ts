@@ -12,7 +12,7 @@ import { DEFAULT_GEARSET, checkCompound, checkSimple, compoundTrains, mountingOk
 import { compareSolutions } from './checks';
 import { centerDistance, clusterCenterDistance, gearGeometry } from './geometry';
 import { checkIndexing, indexingSolutions } from './indexing';
-import { type Ask, type Chain, type Element, type KinExercise, type State, type StateSolution, activeElements, allStates } from './model';
+import { type Ask, type Chain, type Element, type KinExercise, type State, type StateSolution, activeElements, allStates, exerciseForAsk } from './model';
 import { powerAt } from './power';
 import {
   type PiRational,
@@ -295,7 +295,8 @@ interface Alt {
  * that act on the chain: one stage inverted, all stages inverted, other cluster position,
  * screw starts forgotten.
  */
-function chainAlternatives(chain: Chain, state: State, targetShafts: string[], quantity: (c: Chain, s: State) => PiRational | null): Alt[] {
+/** `linear`: the quantity depends on a linear output (screw starts can then be forgotten). */
+function chainAlternatives(chain: Chain, state: State, targetShafts: string[], quantity: (c: Chain, s: State) => PiRational | null, linear = false): Alt[] {
   const alts: Alt[] = [];
   const path = [...new Set(targetShafts.flatMap((s) => pathTo(chain, state, s)))];
   for (const e of path) {
@@ -311,12 +312,17 @@ function chainAlternatives(chain: Chain, state: State, targetShafts: string[], q
     const v = quantity(c, state);
     if (v) alts.push({ code: 'inverse-all', value: v });
   }
+  // other positions only of the clusters that lie on the power path of the target
+  // (moving a cluster of another branch is not a mistake: it does not change the result)
+  const onPath = new Set(path.map((e) => e.id));
+  const relevant = chain.clusters.filter((k) => k.options.some((o) => onPath.has(o)));
   for (const st of allStates(chain)) {
-    if (chain.clusters.every((k) => st[k.id] === state[k.id])) continue;
+    if (chain.clusters.some((k) => !relevant.includes(k) && st[k.id] !== state[k.id])) continue;
+    if (relevant.every((k) => st[k.id] === state[k.id])) continue;
     const v = quantity(chain, st);
     if (v) alts.push({ code: 'wrong-position', value: v, detail: { state: JSON.stringify(st) } });
   }
-  for (const e of activeElements(chain, state)) {
+  for (const e of linear ? activeElements(chain, state) : []) {
     if (e.kind !== 'screw' || e.starts === 1) continue;
     const v = quantity(replaceElement(chain, e.id, (x) => ({ ...(x as typeof e), starts: 1 })), state);
     if (v) alts.push({ code: 'screw-starts', value: v });
@@ -432,7 +438,7 @@ function rawSpecs(ex: KinExercise, ask: Ask): NumericSpec[] {
       const v = solve(chain, st).linear[ask.output];
       if (!v) throw new ExerciseError(`output ${ask.output} not driven`);
       const drive = activeElements(chain, st).find((e) => 'output' in e && e.output === ask.output);
-      const alts = chainAlternatives(chain, st, drive ? [drive.from] : [], (c, s) => linV(c, s, ask.output));
+      const alts = chainAlternatives(chain, st, drive ? [drive.from] : [], (c, s) => linV(c, s, ask.output), true);
       if (drive?.kind === 'rack') {
         alts.push({ code: 'rack-radius', value: prScale(v.v, q(1, 2)) });
         alts.push({ code: 'rack-radius', value: prScale(v.v, q(2)) });
@@ -463,7 +469,7 @@ function rawSpecs(ex: KinExercise, ask: Ask): NumericSpec[] {
       solve(chain, st);
       if (!f) throw new ExerciseError('feed not defined');
       const drive = activeElements(chain, st).find((e) => 'output' in e && e.output === ask.output);
-      const alts = chainAlternatives(chain, st, [ask.spindle, ...(drive ? [drive.from] : [])], (c, s) => feed(c, s, ask.output, ask.spindle));
+      const alts = chainAlternatives(chain, st, [ask.spindle, ...(drive ? [drive.from] : [])], (c, s) => feed(c, s, ask.output, ask.spindle), true);
       const v = linV(chain, st, ask.output);
       if (v) alts.push({ code: 'feed-units', value: v });
       return [{ field: 'value', expected: f, base: 'mm/rev', alts }];
@@ -708,7 +714,8 @@ function gradeMissingTeeth(ex: KinExercise, ask: Extract<Ask, { type: 'missingTe
   return { ask, status: 'wrong', fields: [{ field: 'value', status: 'wrong', given: raw, expected }], diagnoses, solutions };
 }
 
-export function gradeAsk(ex: KinExercise, ask: Ask, ans: AskAnswer): AskResult {
+export function gradeAsk(exercise: KinExercise, ask: Ask, ans: AskAnswer): AskResult {
+  const ex = exerciseForAsk(exercise, ask);
   switch (ask.type) {
     case 'direction':
       return gradeDirection(ex, ask, ans);
@@ -738,7 +745,7 @@ export function diagnosticCollisions(ex: KinExercise): { ask: number; field: str
   ex.asks.forEach((a, i) => {
     if (a.type === 'indexing' && a.N === (ex.data?.K ?? 40)) out.push({ ask: i, field: 'turns', code: 'indexing-inverted' });
     if (a.type === 'changeGears' && eq(requiredRatio(a.threadPitch, a.leadScrewPitch), ONE)) out.push({ ask: i, field: 'za', code: 'inverse-all' });
-    for (const sp of numericSpecs(ex, a))
+    for (const sp of numericSpecs(exerciseForAsk(ex, a), a))
       for (const alt of sp.alts) if (numMatch(parse(decimals(alt.value, 6)), sp.expected)) out.push({ ask: i, field: sp.field, code: alt.code });
   });
   return out;
@@ -746,7 +753,7 @@ export function diagnosticCollisions(ex: KinExercise): { ask: number; field: str
 
 /** The exact expected values (for the solution view and tests). */
 export function expectedValues(ex: KinExercise, ask: Ask): { field: string; value: PiRational; unit: Unit }[] {
-  return numericSpecs(ex, ask).map((s) => ({ field: s.field, value: s.expected, unit: s.base }));
+  return numericSpecs(exerciseForAsk(ex, ask), ask).map((s) => ({ field: s.field, value: s.expected, unit: s.base }));
 }
 
 export { BASE_UNIT, mountingOk, rs as rationalToString };

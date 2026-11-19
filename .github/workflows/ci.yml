@@ -18,6 +18,10 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      # phase-5 acceptance: 10 000 generated exercises (1 000 per archetype)
+      - run: npx vitest run tests/generator.test.ts
+        env:
+          GEN_COUNT: '1000'
 
   oracle:
     runs-on: ubuntu-latest
@@ -34,7 +38,7 @@ jobs:
       - run: npm ci
       # The Python oracle solves golden, fixture and random chains independently;
       # tests/oracle.test.ts compares it with solvers A and B.
-      - run: python tools/oracle/kinematics.py tools/oracle/out/oracle.json tests/golden/golden.json tests/fixtures/euskadi2020.json tests/oracle/random-chains.json
+      - run: python tools/oracle/kinematics.py tools/oracle/out/oracle.json tests/golden/golden.json tests/fixtures/euskadi2020.json tests/oracle/random-chains.json tests/oracle/generated-chains.json src/data/pool/ope-euskadi-2020.json src/data/pool/generated.json
       - run: npm run oracle
         env:
           ORACLE_REQUIRED: '1'

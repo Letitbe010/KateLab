@@ -14,6 +14,7 @@ Each input file may be:
   - tests/golden/golden.json        ({"cases": [{"id", "chain"?}, ...]})
   - a fixture                       ({"chain": {...}})          id = file name
   - tests/oracle/random-chains.json ({"chains": [{"id", "chain"}, ...]})
+  - a pool file                     ({"exercises": [{"id", "chain"}, ...]} or one exercise {"id", "chain"})
 """
 from __future__ import annotations
 
@@ -157,6 +158,10 @@ def load_chains(path: str) -> list[tuple[str, dict]]:
         return [(c["id"], c["chain"]) for c in data["cases"] if "chain" in c]
     if "chains" in data:
         return [(c["id"], c["chain"]) for c in data["chains"]]
+    if "exercises" in data:
+        return [(c["id"], c["chain"]) for c in data["exercises"]]
+    if "chain" in data and "id" in data:
+        return [(data["id"], data["chain"])]
     if "chain" in data:
         return [(os.path.splitext(os.path.basename(path))[0], data["chain"])]
     raise ValueError(f"{path}: unknown format")

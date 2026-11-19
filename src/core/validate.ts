@@ -265,10 +265,15 @@ export function validateExercise(ex: KinExercise): ValidationResult {
       if (!ex.state[c.id] || !c.options.includes(ex.state[c.id] as string))
         err('state.invalid', `State does not select a valid option of cluster ${c.id}`, c.id);
   }
-  const topo = ex.state || !needsState ? topology(chain, ex.state ?? {}) : null;
   for (const a of ex.asks) {
+    const st = a.state ?? ex.state;
+    if (a.state)
+      for (const c of chain.clusters)
+        if (!a.state[c.id] || !c.options.includes(a.state[c.id] as string))
+          err('state.invalid', `Ask "${a.type}": state does not select a valid option of cluster ${c.id}`, c.id);
+    const topo = st || !needsState ? topology(chain, st ?? {}) : null;
     if (STATE_DEPENDENT.has(a.type) || (a.type === 'feedPerRev' && !a.max)) {
-      if (needsState && !ex.state) err('ask.state', `Ask "${a.type}" needs a cluster state`);
+      if (needsState && !st) err('ask.state', `Ask "${a.type}" needs a cluster state`);
     }
     const shaft = 'shaft' in a ? a.shaft : undefined;
     if (shaft !== undefined) {
