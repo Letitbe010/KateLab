@@ -11,7 +11,7 @@
 | 0 | Vite + TS + React, CI, GitHub Pages | Lokalean prest; GitHub biltegia eta Pages oraindik ez |
 | 1 | `rational.ts`, `model.ts`, `validate.ts` | Testak berde |
 | 2 | A eta B ebazleak, `checks.ts`, Python orakulua | KG1–KG10 eta property testak berde |
-| 3 | Eskema zinematikoa (SVG) + layout automatikoa eta eskuzkoa | Erabiltzailearen onespenaren zain |
+| 3 | Eskema zinematikoa (SVG) + layout automatikoa eta eskuzkoa | Erabiltzaileak onartua (2026-11-19) |
 
 ## Komandoak / Comandos
 
