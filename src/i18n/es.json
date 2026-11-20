@@ -337,5 +337,8 @@
   "fig.sym.rack": "piñón y cremallera",
   "fig.sym.screw": "husillo y tuerca",
   "fig.lira.pScrew": "P_husillo",
-  "fig.lira.pThread": "P_rosca"
+  "fig.lira.pThread": "P_rosca",
+  "sol.changeGearsFixed": "Relación que deben dar las ruedas: i = P_rosca / (P_husillo · i_Norton) = {p} / ({lead} · {fixed}) = {i}; debe cumplirse (Za·Zc)/(Zb·Zd) = {i}.",
+  "diag.fixed-ratio-ignored": "Has olvidado la caja Norton (o la relación fija entre la lira y el husillo): las ruedas deben dar P_rosca / (P_husillo · i_Norton), no P_rosca / P_husillo.",
+  "fig.lira.captionFixed": "Para roscar P = {P} mm con husillo patrón de P = {L} mm y caja Norton (i = {fixed}): Za mueve Zb; Zb y Zc van en el mismo eje; Zc mueve Zd, y de ahí el movimiento pasa por la caja Norton al husillo patrón."
 }

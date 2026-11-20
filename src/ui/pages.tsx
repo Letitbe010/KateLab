@@ -26,7 +26,7 @@ const DIAG_TOPIC: Record<string, string> = {
   'feed-units': 'aitzinapena', 'rack-radius': 'translazioa', 'rack-no-60': 'translazioa', 'mm-m': 'translazioa', 'centre-no-half': 'geometria', 'centre-difference': 'geometria',
   'rpm-rads': 'potentzia', 'indexing-inverted': 'zatiketa', 'indexing-not-reduced': 'zatiketa', 'circle-not-on-plates': 'zatiketa', 'local-max': 'kaxak', 'kw-w': 'potentzia',
   'efficiency-ignored': 'potentzia', 'counted-duplicates': 'kaxak', 'ratio-mismatch': 'aldaketa', 'gear-not-in-set': 'aldaketa', 'gear-reused': 'aldaketa',
-  'mounting-condition': 'aldaketa', 'cluster-sum': 'geometria', 'pitch-as-module': 'translazioa',
+  'mounting-condition': 'aldaketa', 'cluster-sum': 'geometria', 'pitch-as-module': 'translazioa', 'fixed-ratio-ignored': 'aldaketa',
 };
 
 const pct = (ok: number, n: number) => (n ? Math.round((100 * ok) / n) : 0);

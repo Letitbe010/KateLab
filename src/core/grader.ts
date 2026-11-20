@@ -8,7 +8,7 @@
  *    are checked (§8.2); every valid answer is accepted.
  *  - Wrong answers are diagnosed by recomputing the usual mistakes (§8.3).
  */
-import { DEFAULT_GEARSET, checkCompound, checkSimple, compoundTrains, mountingOk, requiredRatio, simpleTrains } from './changeGears';
+import { DEFAULT_GEARSET, checkCompound, checkSimple, compoundTrains, mountingOk, quadrantRatio, requiredRatio, simpleTrains } from './changeGears';
 import { compareSolutions } from './checks';
 import { centerDistance, clusterCenterDistance, gearGeometry, rackPinionDiameter } from './geometry';
 import { checkIndexing, indexingSolutions } from './indexing';
@@ -94,6 +94,7 @@ export type DiagCode =
   | 'mounting-condition'
   | 'cluster-sum'
   | 'pitch-as-module'
+  | 'fixed-ratio-ignored'
   | 'unknown';
 
 export interface Diagnosis {
@@ -659,7 +660,7 @@ function gradeIndexing(ex: KinExercise, ask: Extract<Ask, { type: 'indexing' }>,
 
 function gradeChangeGears(ex: KinExercise, ask: Extract<Ask, { type: 'changeGears' }>, ans: AskAnswer): AskResult {
   const set = ex.data?.changeGears ?? DEFAULT_GEARSET;
-  const i = requiredRatio(ask.threadPitch, ask.leadScrewPitch);
+  const i = quadrantRatio(ask);
   const opt = { mountingCondition: !!ask.mountingCondition };
   const four = compoundTrains(i, set, opt);
   const two = simpleTrains(i, set);
@@ -679,9 +680,11 @@ function gradeChangeGears(ex: KinExercise, ask: Extract<Ask, { type: 'changeGear
   const chk = isTwo ? checkSimple(i, set, { za, zb }) : checkCompound(i, set, { za, zb, zc: zc as number, zd: zd as number }, opt);
   const status: Status = chk.valid ? 'correct' : 'wrong';
   const diagnoses: Diagnosis[] = chk.valid ? [] : chk.reasons.map((r) => ({ code: (r === 'bad-input' ? 'unknown' : r) as DiagCode }));
-  if (!chk.valid && !isTwo && chk.reasons.includes('ratio-mismatch')) {
-    const got = mul(q(za, zb), q(zc as number, zd as number));
-    if (eq(got, inv(i))) diagnoses.unshift({ code: 'inverse-all' });
+  if (!chk.valid && chk.reasons.includes('ratio-mismatch')) {
+    const got = isTwo ? q(za, zb) : mul(q(za, zb), q(zc as number, zd as number));
+    if (!isTwo && eq(got, inv(i))) diagnoses.unshift({ code: 'inverse-all' });
+    // the fixed gearing (Norton box) left out: the gears give P_thread / P_screw
+    if (ask.fixedRatio && eq(got, requiredRatio(ask.threadPitch, ask.leadScrewPitch))) diagnoses.unshift({ code: 'fixed-ratio-ignored' });
   }
   return { ask, status, fields: names.map((f) => ({ field: f, status, given: ans[f] ?? '', expected })), diagnoses, solutions };
 }
@@ -764,7 +767,7 @@ export function diagnosticCollisions(ex: KinExercise): { ask: number; field: str
   const out: { ask: number; field: string; code: DiagCode }[] = [];
   ex.asks.forEach((a, i) => {
     if (a.type === 'indexing' && a.N === (ex.data?.K ?? 40)) out.push({ ask: i, field: 'turns', code: 'indexing-inverted' });
-    if (a.type === 'changeGears' && eq(requiredRatio(a.threadPitch, a.leadScrewPitch), ONE)) out.push({ ask: i, field: 'za', code: 'inverse-all' });
+    if (a.type === 'changeGears' && eq(quadrantRatio(a), ONE)) out.push({ ask: i, field: 'za', code: 'inverse-all' });
     for (const sp of numericSpecs(exerciseForAsk(ex, a), a))
       for (const alt of sp.alts) if (numMatch(parse(decimals(alt.value, 6)), sp.expected)) out.push({ ask: i, field: sp.field, code: alt.code });
   });

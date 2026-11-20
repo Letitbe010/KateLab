@@ -7,7 +7,7 @@ const DIAG = [
   'inverse-stage', 'inverse-all', 'idler-in-ratio', 'idler-direction', 'wrong-position', 'screw-starts', 'feed-units',
   'rack-radius', 'rack-no-60', 'mm-m', 'centre-no-half', 'centre-difference', 'rpm-rads', 'indexing-inverted',
   'indexing-not-reduced', 'circle-not-on-plates', 'local-max', 'kw-w', 'efficiency-ignored', 'counted-duplicates',
-  'ratio-mismatch', 'gear-not-in-set', 'gear-reused', 'mounting-condition', 'cluster-sum', 'pitch-as-module', 'unknown',
+  'ratio-mismatch', 'gear-not-in-set', 'gear-reused', 'mounting-condition', 'cluster-sum', 'pitch-as-module', 'fixed-ratio-ignored', 'unknown',
 ];
 
 describe('i18n', () => {

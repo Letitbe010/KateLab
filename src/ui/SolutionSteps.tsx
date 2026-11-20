@@ -3,7 +3,7 @@
  * fractions, total ratio, shaft speeds, linear outputs, speed table, and the
  * expected answers with every valid solution for multi-solution asks.
  */
-import { requiredRatio } from '../core/changeGears';
+import { quadrantRatio } from '../core/changeGears';
 import { centerDistance, rackPinionDiameter } from '../core/geometry';
 import { type AskResult, fmt, gradeAsk } from '../core/grader';
 import { indexingFraction } from '../core/indexing';
@@ -43,7 +43,8 @@ function formulaLine(ex: KinExercise, ask: Ask, t: (k: string, v?: Record<string
     return t('sol.indexing', { K, N: ask.N, turns: f.turns, frac: rs(f.fraction), den: f.fraction.d.toString() });
   }
   if (ask.type === 'changeGears') {
-    const i = requiredRatio(ask.threadPitch, ask.leadScrewPitch);
+    const i = quadrantRatio(ask);
+    if (ask.fixedRatio) return t('sol.changeGearsFixed', { p: fmt(pr(ask.threadPitch), 3), lead: fmt(pr(ask.leadScrewPitch), 3), fixed: rs(ask.fixedRatio), i: rs(i) });
     return t('sol.changeGears', { p: fmt(pr(ask.threadPitch), 3), lead: fmt(pr(ask.leadScrewPitch), 3), i: rs(i) });
   }
   return null;

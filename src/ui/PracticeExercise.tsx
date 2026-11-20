@@ -17,6 +17,9 @@ import { exerciseTitle } from './describe';
 import { KinematicSchema } from './KinematicSchema';
 import { DividingHead } from './figures/DividingHead';
 import { indexingSolutions } from '../core/indexing';
+import { LiraFigure } from './figures/Mechanisms';
+import { toString as rstr } from '../core/rational';
+import { DEFAULT_GEARSET } from '../core/changeGears';
 import { hrefOf } from './router';
 import { SolutionSteps } from './SolutionSteps';
 import { defaultUnit } from './units';
@@ -102,6 +105,7 @@ export function PracticeExercise({ source }: { source: ExerciseSource }) {
     else if (ex.archetype) window.location.hash = hrefOf({ name: 'generated', archetype: ex.archetype, seed: Math.floor(Math.random() * 1_000_000) });
   };
 
+  const gearsAsk = ex.asks.find((a): a is Extract<typeof a, { type: 'changeGears' }> => a.type === 'changeGears');
   const indexAsk = ex.asks.find((a): a is Extract<typeof a, { type: 'indexing' }> => a.type === 'indexing');
 
   return (
@@ -128,7 +132,17 @@ export function PracticeExercise({ source }: { source: ExerciseSource }) {
       <p className="statement">{ex.text[lang]}</p>
       {ex.chain.input.direction && ex.chain.viewpoint && <p className="pos">{t('ex.viewpoint', { v: ex.chain.viewpoint[lang] })}</p>}
 
-      {indexAsk ? (
+      {gearsAsk ? (
+        // change gears: the quadrant, with the tooth counts only in the solution
+        <LiraFigure
+          threadPitch={rstr(gearsAsk.threadPitch)}
+          leadScrewPitch={rstr(gearsAsk.leadScrewPitch)}
+          {...(gearsAsk.fixedRatio ? { fixedRatio: rstr(gearsAsk.fixedRatio) } : {})}
+          set={ex.data?.changeGears ?? DEFAULT_GEARSET}
+          mountingCondition={!!gearsAsk.mountingCondition}
+          answer={step === 3}
+        />
+      ) : indexAsk ? (
         // a dividing head is shown as such, not as a generic kinematic chain
         <DividingHead K={ex.data?.K ?? 40} N={indexAsk.N} plates={ex.data?.platesHoles ?? []} answer={step === 3 ? (indexingSolutions(ex.data?.K ?? 40, indexAsk.N, ex.data?.platesHoles ?? [])[0] ?? null) : null} />
       ) : (

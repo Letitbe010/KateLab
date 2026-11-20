@@ -9,11 +9,11 @@
  * typed by hand.
  */
 import type { ReactNode } from 'react';
-import { DEFAULT_GEARSET, compoundTrains, requiredRatio } from '../../core/changeGears';
+import { DEFAULT_GEARSET, compoundTrains, mountingOk, quadrantRatio } from '../../core/changeGears';
 import { fmt } from '../../core/grader';
 import { type Chain, type ChainJSON, type Element, chainFromJSON } from '../../core/model';
 import { powerAt } from '../../core/power';
-import { mul, parse, pr, q, sub, toNumber } from '../../core/rational';
+import { mul, parse, pr, q, sub, toNumber, toString } from '../../core/rational';
 import { solveStateA } from '../../core/solverPath';
 import { fillTemplate } from '../../core/template';
 import { useT } from '../../i18n';
@@ -507,12 +507,31 @@ export function FeedFigure({ chain: j, output, spindle }: { chain: ChainJSON; ou
 // ---------------------------------------------------------------------------
 // change-gear quadrant (lira)
 // ---------------------------------------------------------------------------
-export function LiraFigure({ threadPitch, leadScrewPitch }: { threadPitch: string; leadScrewPitch: string }) {
+export interface LiraProps {
+  threadPitch: string;
+  leadScrewPitch: string;
+  /** Fixed gearing between quadrant and lead screw (n_screw / n_in), e.g. Norton 1:2 = "1/2". */
+  fixedRatio?: string;
+  /** Available gears (multiset); default: the default set. */
+  set?: number[];
+  mountingCondition?: boolean;
+  /** false: exercise statement (no tooth counts shown). */
+  answer?: boolean;
+}
+
+export function LiraFigure({ threadPitch, leadScrewPitch, fixedRatio, set = DEFAULT_GEARSET, mountingCondition = true, answer = true }: LiraProps) {
   const { t } = useTpl(null);
   const P = parse(threadPitch);
   const L = parse(leadScrewPitch);
-  const train = compoundTrains(requiredRatio(P, L), DEFAULT_GEARSET, { mountingCondition: true })[0];
-  if (!train) throw new Error('LiraFigure: no mountable train');
+  const fixed = fixedRatio ? parse(fixedRatio) : undefined;
+  const i = quadrantRatio({ threadPitch: P, leadScrewPitch: L, ...(fixed ? { fixedRatio: fixed } : {}) });
+  // shown train: prefer four different gears that also meet the mounting condition
+  const all = compoundTrains(i, set, { mountingCondition });
+  const distinct = (x: { za: number; zb: number; zc: number; zd: number }) => new Set([x.za, x.zb, x.zc, x.zd]).size === 4;
+  const found = all.find((x) => distinct(x) && mountingOk(x)) ?? all.find(distinct) ?? all[0];
+  if (answer && !found) throw new Error('LiraFigure: no train for this ratio');
+  // without the answer, neutral gear sizes and no numbers
+  const train = answer && found ? found : { za: 40, zb: 60, zc: 30, zd: 60 };
   const s = 1.05; // px per tooth (radius)
   const r = (z: number) => z * s;
   const A: Pt = [170, 110];
@@ -523,11 +542,15 @@ export function LiraFigure({ threadPitch, leadScrewPitch }: { threadPitch: strin
   const H = Math.max(330, D[1] + r(train.zd) + 60);
   const gearLabel = (p: Pt, name: string, z: number, dx: number, dy: number) => (
     <Txt x={p[0] + dx} y={p[1] + dy} bold>
-      {name} = {z}
+      {answer ? `${name} = ${z}` : `${name} = ?`}
     </Txt>
   );
+  // Norton box on the lead-screw line, between Zd and the screw
+  const nx = D[0] + r(train.zd) + 30;
+  const screwX0 = fixed ? nx + 110 : D[0] + r(train.zd) + 20;
+  const capKey = fixed ? 'fig.lira.captionFixed' : 'fig.lira.caption';
   return (
-    <Frame w={760} h={H} label={t('fig.lira.title')} caption={t('fig.lira.caption', { P: fmt(pr(P), 2), L: fmt(pr(L), 2) })}>
+    <Frame w={760} h={H} label={t('fig.lira.title')} caption={t(capKey, { P: fmt(pr(P), 2), L: fmt(pr(L), 2), fixed: fixed ? toString(fixed) : '' })}>
       {/* quadrant (lira): slotted arm turning around the lead-screw axis */}
       <path d={`M${D[0] - 30},${D[1] + 24} L${A[0] - 40},${A[1] - 10} L${A[0] + 10},${A[1] - 50} L${D[0] + 34},${D[1] - 6} Z`} fill="#f2f4f7" stroke={C.offStroke} strokeWidth={1.2} />
       <GearFront cx={A[0]} cy={A[1]} r={r(train.za)} z={train.za} lit />
@@ -541,17 +564,28 @@ export function LiraFigure({ threadPitch, leadScrewPitch }: { threadPitch: strin
       <Txt x={A[0] - r(train.za) - 12} y={A[1] + 4} anchor="end" size={12} color={C.muted}>
         {t('fig.lira.spindle')}
       </Txt>
-      {/* lead screw from Zd, carriage with the thread being cut */}
+      {/* lead screw from Zd (through the Norton box if any), carriage with the thread being cut */}
       <line x1={D[0]} y1={D[1]} x2={720} y2={D[1]} stroke={C.ink} strokeWidth={3} />
-      {Array.from({ length: 18 }, (_, i) => (
-        <line key={i} x1={D[0] + r(train.zd) + 20 + i * 18} y1={D[1] + 8} x2={D[0] + r(train.zd) + 29 + i * 18} y2={D[1] - 8} stroke={C.ink} strokeWidth={1.2} />
+      {fixed && (
+        <g>
+          <rect x={nx} y={D[1] - 26} width={90} height={52} rx={6} fill={C.blueFill} stroke={C.blue} strokeWidth={1.6} />
+          <Txt x={nx + 45} y={D[1] - 4} color={C.blue} bold>
+            Norton
+          </Txt>
+          <Txt x={nx + 45} y={D[1] + 14} color={C.blue} size={12}>
+            i = {toString(fixed)}
+          </Txt>
+        </g>
+      )}
+      {Array.from({ length: Math.max(0, Math.floor((710 - screwX0) / 18)) }, (_, k) => (
+        <line key={k} x1={screwX0 + k * 18} y1={D[1] + 8} x2={screwX0 + 9 + k * 18} y2={D[1] - 8} stroke={C.ink} strokeWidth={1.2} />
       ))}
-      <Txt x={640} y={D[1] - 16} bold>
+      <Txt x={650} y={D[1] - 16} bold>
         {t('fig.lira.pScrew')} = {fmt(pr(L), 2)} mm
       </Txt>
       <rect x={430} y={60} width={290} height={50} fill={C.offFill} stroke={C.ink} strokeWidth={1.2} />
-      {Array.from({ length: 12 }, (_, i) => (
-        <line key={i} x1={445 + i * 22} y1={110} x2={456 + i * 22} y2={60} stroke={C.onStroke} strokeWidth={1.2} />
+      {Array.from({ length: 12 }, (_, k) => (
+        <line key={k} x1={445 + k * 22} y1={110} x2={456 + k * 22} y2={60} stroke={C.onStroke} strokeWidth={1.2} />
       ))}
       <Txt x={575} y={50} color={C.onStroke} bold>
         {t('fig.lira.pThread')} = {fmt(pr(P), 2)} mm
@@ -559,9 +593,11 @@ export function LiraFigure({ threadPitch, leadScrewPitch }: { threadPitch: strin
       <Txt x={575} y={134} size={12} color={C.muted}>
         {t('fig.lira.piece')}
       </Txt>
-      <Txt x={430} y={H - 16} anchor="start" size={13}>
-        i = (Za·Zc)/(Zb·Zd) = ({train.za}·{train.zc})/({train.zb}·{train.zd})
-      </Txt>
+      {answer && (
+        <Txt x={430} y={H - 16} anchor="start" size={13}>
+          i = (Za·Zc)/(Zb·Zd) = ({train.za}·{train.zc})/({train.zb}·{train.zd}) = {toString(i)}
+        </Txt>
+      )}
     </Frame>
   );
 }

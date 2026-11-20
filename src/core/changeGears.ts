@@ -31,6 +31,14 @@ export interface ChangeGearOptions {
 
 export const requiredRatio = (threadPitch: Rational, leadScrewPitch: Rational): Rational => div(threadPitch, leadScrewPitch);
 
+/**
+ * Ratio the change gears must give when a fixed gearing (e.g. a Norton box) sits
+ * between the quadrant and the lead screw: P_thread = i_gears · i_fixed · P_screw,
+ * with i_fixed = n_screw / n_quadrant-output (Norton 1:2 → 1/2, user decision 2026-11-20).
+ */
+export const quadrantRatio = (a: { threadPitch: Rational; leadScrewPitch: Rational; fixedRatio?: Rational }): Rational =>
+  div(a.threadPitch, a.fixedRatio ? mul(a.leadScrewPitch, a.fixedRatio) : a.leadScrewPitch);
+
 function counts(set: number[]): Map<number, number> {
   const m = new Map<number, number>();
   for (const z of set) m.set(z, (m.get(z) ?? 0) + 1);

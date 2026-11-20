@@ -1,0 +1,102 @@
+{
+  "id": "ope-gaztela-leon-2020-3",
+  "origin": "ope",
+  "title": {
+    "eu": "Gaztela eta Leon OPE 2020 (eredua) — Lira eta Nortonen kaxa",
+    "es": "OPE Castilla y León 2020 (modelo) — Lira y caja Norton"
+  },
+  "sourceNote": "Gaztela eta Leon, 0590-112 azterketa-eredua (EDU/255/2020 agindua, BOCyL 2020-03-06), 1. ariketa, 3. atala (lehen galdera). Nortonen kaxaren 1:2 erlazioa i = 1/2 gisa irakurria (torloju patroiak liraren irteeraren bira erdia), erabiltzaileak erabakia 2026-11-20. \"Varios juegos de ruedas\" bi multzo gisa modelatua (bakoitza bi aldiz): 3/7 erlaziorako ez da gurpil bera bi aldiz baino gehiago behar. Enuntziatuak ez du muntaketa-baldintzarik aipatzen, eta ez da aplikatzen. Roskatze-denbora eta zatitzailearen atalak (K = 60, piezaren planoa behar du) ez daude KateLab-en. Kateko 100 rpm-ak ez daude enuntziatuan (kalkuluan ez du eraginik). Iturria: erabiltzailearen karpetako PDFa.",
+  "difficulty": 2,
+  "archetype": "aldaketa-gurpilak",
+  "review": "review-needed",
+  "chain": {
+    "shafts": [
+      {
+        "id": "AN",
+        "label": "AN"
+      },
+      {
+        "id": "TP",
+        "label": "TP"
+      }
+    ],
+    "linear": [
+      {
+        "id": "C",
+        "label": "gurdia"
+      }
+    ],
+    "elements": [
+      {
+        "kind": "clutch",
+        "id": "k",
+        "from": "AN",
+        "to": "TP"
+      },
+      {
+        "kind": "screw",
+        "id": "s",
+        "from": "TP",
+        "output": "C",
+        "pitch": "14",
+        "starts": 1
+      }
+    ],
+    "input": {
+      "shaft": "AN",
+      "n": "100"
+    }
+  },
+  "asks": [
+    {
+      "type": "changeGears",
+      "threadPitch": "3",
+      "leadScrewPitch": "14",
+      "fixedRatio": "1/2",
+      "label": {
+        "eu": "Liran muntatu beharreko gurpilak (bi edo lau gurpil).",
+        "es": "Ruedas a montar en la lira (dos o cuatro ruedas)."
+      }
+    }
+  ],
+  "text": {
+    "eu": "Tornuan P = 3 mm-ko haria ebaki behar da. Torloju patroiaren pausoa 14 mm da, eta liraren irteeraren eta torloju patroiaren artean dagoen Nortonen kaxak 1:2 erlazioa du. Lira osatzeko gurpilak (hainbat multzo daude): 24, 26, 28, 32, 40, 44, 46, 48, 56, 57, 64, 68, 72, 86, 96, 100. Zein gurpil muntatu behar dira liran?",
+    "es": "Hay que roscar en el torno un paso de rosca de 3 mm. El husillo de roscar tiene paso 14 mm, y la caja Norton existente entre la salida de la lira y el husillo de roscar tiene una relación de transmisión de 1:2. Ruedas disponibles para conformar la lira (se dispone de varios juegos): 24, 26, 28, 32, 40, 44, 46, 48, 56, 57, 64, 68, 72, 86, 96, 100. ¿Cuáles serían las ruedas a montar en la lira?"
+  },
+  "data": {
+    "changeGears": [
+      24,
+      26,
+      28,
+      32,
+      40,
+      44,
+      46,
+      48,
+      56,
+      57,
+      64,
+      68,
+      72,
+      86,
+      96,
+      100,
+      24,
+      26,
+      28,
+      32,
+      40,
+      44,
+      46,
+      48,
+      56,
+      57,
+      64,
+      68,
+      72,
+      86,
+      96,
+      100
+    ]
+  }
+}

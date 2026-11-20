@@ -143,7 +143,7 @@ export type AskBase =
   | { type: 'pitchDiameter'; element: ElementId }
   | { type: 'missingTeeth'; element: ElementId; side: 'z1' | 'z2'; target: { shaft: ShaftId; n: Rational } }
   | { type: 'indexing'; N: number }
-  | { type: 'changeGears'; threadPitch: Rational; leadScrewPitch: Rational; mountingCondition?: boolean }
+  | { type: 'changeGears'; threadPitch: Rational; leadScrewPitch: Rational; mountingCondition?: boolean; /** fixed gearing quadrant → lead screw (n_screw / n_in), e.g. Norton 1:2 = 1/2 */ fixedRatio?: Rational }
   | { type: 'torquePower'; shaft: ShaftId };
 
 export interface KinExercise {
@@ -178,6 +178,7 @@ export function askFromJSON(a: AskJSON): Ask {
   if (a.type === 'changeGears') {
     o.threadPitch = from(String(a.threadPitch));
     o.leadScrewPitch = from(String(a.leadScrewPitch));
+    if (a.fixedRatio !== undefined) o.fixedRatio = from(String(a.fixedRatio));
   }
   if (a.type === 'missingTeeth') {
     const t = a.target as { shaft: string; n: string };
@@ -191,6 +192,7 @@ export function askToJSON(a: Ask): AskJSON {
   if (a.type === 'changeGears') {
     o.threadPitch = toString(a.threadPitch);
     o.leadScrewPitch = toString(a.leadScrewPitch);
+    if (a.fixedRatio) o.fixedRatio = toString(a.fixedRatio);
   }
   if (a.type === 'missingTeeth') o.target = { shaft: a.target.shaft, n: toString(a.target.n) };
   return o as AskJSON;

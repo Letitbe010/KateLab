@@ -290,6 +290,7 @@ export function validateExercise(ex: KinExercise): ValidationResult {
     if (a.type === 'indexing' && (!posInt(a.N) || !ex.data?.platesHoles?.length))
       err('ask.indexing', 'indexing needs N > 0 and a plate set in data.platesHoles');
     if (a.type === 'changeGears' && !ex.data?.changeGears?.length) err('ask.changeGears', 'changeGears needs a gear set');
+    if (a.type === 'changeGears' && a.fixedRatio && a.fixedRatio.n <= 0n) err('ask.changeGears', 'changeGears: fixedRatio must be positive');
     if (a.type === 'pitchDiameter' && !chain.elements.some((e) => e.id === a.element && (e.kind === 'rack' || (e.kind === 'gear' && e.module))))
       err('ask.ref', `pitchDiameter: ${a.element} must be a rack pinion or a gear with module`, a.element);
     if (a.type === 'missingTeeth' && !chain.elements.some((e) => e.id === a.element))

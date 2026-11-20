@@ -337,5 +337,8 @@
   "fig.sym.rack": "pinoia eta kremailera",
   "fig.sym.screw": "torloju-azkoina",
   "fig.lira.pScrew": "P_torlojua",
-  "fig.lira.pThread": "P_haria"
+  "fig.lira.pThread": "P_haria",
+  "sol.changeGearsFixed": "Gurpilek eman behar duten erlazioa: i = P_haria / (P_torlojua · i_Norton) = {p} / ({lead} · {fixed}) = {i}; (Za·Zc)/(Zb·Zd) = {i} izan behar da.",
+  "diag.fixed-ratio-ignored": "Nortonen kaxa (edo liraren eta torloju patroiaren arteko erlazio finkoa) ahaztu duzu: gurpilek P_haria / (P_torlojua · i_Norton) eman behar dute, ez P_haria / P_torlojua.",
+  "fig.lira.captionFixed": "P_haria = {P} mm hariztatzeko torloju patroiarekin (P = {L} mm) eta Nortonen kaxarekin (i = {fixed}): Za-k Zb eragiten du; Zb eta Zc ardatz berean daude; Zc-k Zd eragiten du, eta handik Nortonen kaxaren bidez torloju patroira doa higidura."
 }
