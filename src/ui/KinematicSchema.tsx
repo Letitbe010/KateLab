@@ -5,7 +5,7 @@
  * linear outputs in blue. Works with the automatic layout or a hand-made one.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { type ElementLayout, type SchemaLayout, type ShaftLayout, autoLayout } from '../core/layout';
+import { type ElementLayout, type SchemaLayout, type ShaftLayout, SLIDE_PITCH, autoLayout, slidePlan } from '../core/layout';
 import { type Chain, type Element, type State, activeElements } from '../core/model';
 import { toString as rs } from '../core/rational';
 import { topology } from '../core/validate';
@@ -110,6 +110,20 @@ const path = (o: O, pts: [number, number][], close = true) =>
     })
     .join('') + (close ? 'Z' : '');
 
+interface Slide {
+  o: O;
+  /** Rest position of each block gear along its shaft. */
+  base: Record<string, number>;
+  /** Current shift of the block (selected pair aligned). */
+  d: number;
+  hub: [number, number];
+  /** Largest radius in the block: common baseline of its labels. */
+  maxR: number;
+  parts: JSX.Element[];
+  labels: JSX.Element[];
+}
+const slideShift = (b: Slide) => (b.o === 'h' ? `translate(${b.d}px, 0px)` : `translate(0px, ${b.d}px)`);
+
 export function KinematicSchema(props: KinematicSchemaProps) {
   const { chain, state, lang = 'eu', locked = false, onStateChange, speeds, masked = [], highlight = true, lit: litOnly } = props;
   const t = TXT[lang];
@@ -157,18 +171,18 @@ export function KinematicSchema(props: KinematicSchemaProps) {
   const fill = (lit: boolean) => (lit ? C.onFill : C.offFill);
   const stroke = (lit: boolean) => (lit ? C.onStroke : C.offStroke);
 
-  const text = (x: number, y: number, s: string, o: { lit?: boolean; anchor?: 'start' | 'middle' | 'end'; color?: string; size?: number; bold?: boolean } = {}) =>
-    labels.push(
+  const text = (x: number, y: number, s: string, o: { lit?: boolean; anchor?: 'start' | 'middle' | 'end'; color?: string; size?: number; bold?: boolean } = {}, into: JSX.Element[] = labels) =>
+    into.push(
       <text key={K()} x={x} y={y} fontSize={o.size ?? 14} textAnchor={o.anchor ?? 'middle'} fill={o.color ?? (o.lit === false ? C.muted : C.ink)} fontWeight={(o.bold ?? o.lit) ? 700 : 400}>
         {s}
       </text>,
     );
 
   /** Gear (or pulley) seen edge-on on shaft s at position a along it. */
-  const gear = (s: ShaftLayout, a: number, r: number, lit: boolean, w = 14, sliding = false) => {
-    parts.push(<rect key={K()} {...rectAW(s.o, a - w / 2, a + w / 2, s.c - r, s.c + r)} rx={1.5} fill={fill(lit)} stroke={stroke(lit)} strokeWidth={lit ? 1.7 : 1.1} />);
+  const gear = (s: ShaftLayout, a: number, r: number, lit: boolean, w = 14, sliding = false, into: JSX.Element[] = parts) => {
+    into.push(<rect key={K()} {...rectAW(s.o, a - w / 2, a + w / 2, s.c - r, s.c + r)} rx={1.5} fill={fill(lit)} stroke={stroke(lit)} strokeWidth={lit ? 1.7 : 1.1} />);
     const [x, y] = pt(s.o, a, s.c);
-    parts.push(
+    into.push(
       sliding ? (
         <line key={K()} x1={x - 3} y1={y + 4} x2={x + 3} y2={y - 4} stroke={C.ink} strokeWidth={1.4} />
       ) : (
@@ -178,16 +192,17 @@ export function KinematicSchema(props: KinematicSchemaProps) {
   };
 
   /** Label of a gear on the outer side of shaft s (away from the mating shaft): name, then the value smaller. */
-  const gearLabel = (s: ShaftLayout, a: number, r: number, otherC: number, name: string | undefined, value: string, lit: boolean) => {
+  const gearLabel = (s: ShaftLayout, a: number, r: number, otherC: number, name: string | undefined, value: string, lit: boolean, into: JSX.Element[] = labels, stagger = 0) => {
     const before = s.c < otherC;
     const main = name ?? value;
     const sub = name && value && L.showTeeth !== false ? value : undefined;
     if (s.o === 'h') {
-      const y = before ? s.c - r - 7 : s.c + r + 18;
-      text(a, y, main, { lit });
-      if (sub) text(a, before ? y - 15 : y + 15, sub, { size: 12, color: C.muted, bold: false });
+      const st = stagger * (sub ? 30 : 15);
+      const y = before ? s.c - r - 7 - st : s.c + r + 18 + st;
+      text(a, y, main, { lit }, into);
+      if (sub) text(a, before ? y - 15 : y + 15, sub, { size: 12, color: C.muted, bold: false }, into);
     } else {
-      text(before ? s.c - r - 6 : s.c + r + 6, a + 5, sub ? `${main} (${sub})` : main, { lit, anchor: before ? 'end' : 'start' });
+      text(before ? s.c - r - 6 : s.c + r + 6, a + 5, sub ? `${main} (${sub})` : main, { lit, anchor: before ? 'end' : 'start' }, into);
     }
   };
 
@@ -236,17 +251,38 @@ export function KinematicSchema(props: KinematicSchemaProps) {
     text(mx, my - 26, `n = ${rs(chain.input.n)} rpm`, { lit: true });
   }
 
+  // ---- sliding blocks: the gears on the sliding shaft form one block that moves
+  // along it, so only the selected pair is in mesh and the others run free ----
+  const slides = new Map<string, Slide>();
+  for (const c of chain.clusters) {
+    const cl = L.clusters[c.id];
+    if (!cl) continue;
+    const plan = slidePlan(chain, L, c.id, state[c.id]);
+    if (!plan) continue;
+    const s = S(cl.shaft);
+    const maxR = Math.max(
+      ...c.options.map((o) => {
+        const e = chain.elements.find((x) => x.id === o);
+        const q = L.elements[o];
+        return !e || !q || !('to' in e) ? 0 : e.from === cl.shaft ? q.r1 : q.r2;
+      }),
+    );
+    const blk: Slide = { ...plan, o: s.o, maxR, parts: [], labels: [] };
+    blk.parts.push(<rect key={K()} {...rectAW(s.o, plan.hub[0], plan.hub[1], s.c - 5, s.c + 5)} rx={3} fill="#cfd6df" stroke={C.ink} strokeWidth={1} />);
+    slides.set(c.id, blk);
+  }
+
   // ---- cluster hubs (under the gears) ----
   for (const [cid, cl] of Object.entries(L.clusters)) {
     const s = S(cl.shaft);
-    parts.push(<rect key={K()} {...rectAW(s.o, cl.a0, cl.a1, s.c - 5, s.c + 5)} rx={3} fill="#cfd6df" stroke={C.ink} strokeWidth={1} />);
+    if (!slides.has(cid)) parts.push(<rect key={K()} {...rectAW(s.o, cl.a0, cl.a1, s.c - 5, s.c + 5)} rx={3} fill="#cfd6df" stroke={C.ink} strokeWidth={1} />);
     if (cl.arrow === null) continue;
     const c = chain.clusters.find((x) => x.id === cid);
     let w = cl.arrow;
     if (w === undefined) {
       const opts = (c?.options ?? []).map((o) => chain.elements.find((e) => e.id === o)).filter((e): e is Element => !!e);
       const maxR = Math.max(...opts.map((e) => ('to' in e && e.to === cl.shaft ? L.elements[e.id]?.r2 : L.elements[e.id]?.r1) ?? 0));
-      w = s.c + maxR + 30;
+      w = s.c + maxR + (slides.has(cid) ? 48 : 30); // a sliding block has staggered labels above the arrow
     }
     labels.push(<path key={K()} d={path(s.o, [[cl.a0 + 4, w], [cl.a1 - 4, w]], false)} stroke={C.ink} strokeWidth={1.4} markerStart="url(#arr)" markerEnd="url(#arr)" />);
     const [lx, ly] = pt(s.o, (cl.a0 + cl.a1) / 2, w + 18);
@@ -270,6 +306,23 @@ export function KinematicSchema(props: KinematicSchemaProps) {
         switch (e.kind) {
           case 'gear':
           case 'chain': {
+            const blk = sliding ? slides.get(clusterOf.get(e.id) as string) : undefined;
+            if (blk && e.kind === 'gear') {
+              // the gear on the sliding shaft is drawn in the block (rest position); its mate stays
+              const fromSlides = slideOn === e.from;
+              const [sl, fx] = fromSlides ? [s1, s2] : [s2, s1];
+              const [rl, rf] = fromSlides ? [p.r1, p.r2] : [p.r2, p.r1];
+              const [nl, nf] = fromSlides ? [p.n1, p.n2] : [p.n2, p.n1];
+              const [zl, zf] = fromSlides ? [e.z1, e.z2] : [e.z2, e.z1];
+              const b = blk.base[e.id] as number;
+              gear(sl, b, rl, lit, 14, true, blk.parts);
+              gear(fx, a, rf, lit);
+              // neighbouring block gears are only SLIDE_PITCH apart: alternate the label height
+              const rank = Math.round((b - Math.min(...Object.values(blk.base))) / SLIDE_PITCH);
+              gearLabel(sl, b, blk.maxR, fx.c, nl, `${zl}`, lit, blk.labels, rank % 2);
+              gearLabel(fx, a, rf, sl.c, nf, `${zf}`, lit);
+              break;
+            }
             gear(s1, a, p.r1, lit, 14, sliding && slideOn === e.from);
             gear(s2, a, p.r2, lit, 14, sliding && slideOn === e.to);
             if (e.kind === 'chain') {
@@ -465,7 +518,17 @@ export function KinematicSchema(props: KinematicSchemaProps) {
             </marker>
           </defs>
           <g>{parts}</g>
+          {[...slides.values()].map((b, i) => (
+            <g key={`sp${i}`} className="slide" style={{ transform: slideShift(b) }}>
+              {b.parts}
+            </g>
+          ))}
           <g>{labels}</g>
+          {[...slides.values()].map((b, i) => (
+            <g key={`sl${i}`} className="slide" style={{ transform: slideShift(b) }}>
+              {b.labels}
+            </g>
+          ))}
         </svg>
       </div>
       <details className="schema-table">

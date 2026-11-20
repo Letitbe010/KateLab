@@ -15,6 +15,8 @@ import { useT } from '../i18n';
 import { AnswerForm } from './AnswerForm';
 import { exerciseTitle } from './describe';
 import { KinematicSchema } from './KinematicSchema';
+import { DividingHead } from './figures/DividingHead';
+import { indexingSolutions } from '../core/indexing';
 import { hrefOf } from './router';
 import { SolutionSteps } from './SolutionSteps';
 import { defaultUnit } from './units';
@@ -100,6 +102,8 @@ export function PracticeExercise({ source }: { source: ExerciseSource }) {
     else if (ex.archetype) window.location.hash = hrefOf({ name: 'generated', archetype: ex.archetype, seed: Math.floor(Math.random() * 1_000_000) });
   };
 
+  const indexAsk = ex.asks.find((a): a is Extract<typeof a, { type: 'indexing' }> => a.type === 'indexing');
+
   return (
     <section className="card exercise">
       <div className="ex-top">
@@ -124,7 +128,12 @@ export function PracticeExercise({ source }: { source: ExerciseSource }) {
       <p className="statement">{ex.text[lang]}</p>
       {ex.chain.input.direction && ex.chain.viewpoint && <p className="pos">{t('ex.viewpoint', { v: ex.chain.viewpoint[lang] })}</p>}
 
-      <KinematicSchema chain={ex.chain} state={shownState} lang={lang} locked {...(speeds ? { speeds } : {})} highlight={step === 3} />
+      {indexAsk ? (
+        // a dividing head is shown as such, not as a generic kinematic chain
+        <DividingHead K={ex.data?.K ?? 40} N={indexAsk.N} plates={ex.data?.platesHoles ?? []} answer={step === 3 ? (indexingSolutions(ex.data?.K ?? 40, indexAsk.N, ex.data?.platesHoles ?? [])[0] ?? null) : null} />
+      ) : (
+        <KinematicSchema chain={ex.chain} state={shownState} lang={lang} locked {...(speeds ? { speeds } : {})} highlight={step === 3} />
+      )}
 
       {step === 0 ? (
         <div className="actions">

@@ -232,3 +232,13 @@ code { font-size: 14px; }
 .rev-note { width: 100%; margin-top: 6px; }
 .rev-note textarea { font: inherit; width: 100%; padding: 8px 10px; border: 1px solid var(--muted); border-radius: 8px; background: var(--surface); color: var(--ink); }
 .rev-notes { margin: 4px 0 0; font-size: 14.5px; }
+
+/* sliding block of a gearbox: moves along its shaft to the selected pair */
+.schema svg .slide {
+  transition: transform 0.45s ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .schema svg .slide {
+    transition: none;
+  }
+}

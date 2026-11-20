@@ -284,5 +284,16 @@
   "rev.error": "Ezin izan da gorde: {e}",
   "rev.notes": "Gordetako oharrak",
   "rev.reviewed": "Berrikusia",
-  "rev.pending": "Berrikusteko"
+  "rev.pending": "Berrikusteko",
+  "fig.dh.title": "Buru zatitzailea",
+  "fig.dh.worm": "torloju amaigabea",
+  "fig.dh.wheel": "gurpil helikoidala",
+  "fig.dh.piece": "pieza (zatiak)",
+  "fig.dh.spindle": "ardatz nagusia",
+  "fig.dh.plate": "zulo-platera (finkoa)",
+  "fig.dh.crank": "biradera",
+  "fig.dh.relation": "Biraderaren {K} bira = piezaren bira 1",
+  "fig.dh.front": "Zulo-platera, aurrez aurre",
+  "fig.dh.question": "Pieza {N} zatitan banatzeko: zenbat bira oso eta zein zirkulutan zenbat zulo?",
+  "fig.dh.answer": "Zati bakoitzeko: {turns} bira oso + {holes} zulo {circle} zuloko zirkuluan (sektore-besoen artean)."
 }

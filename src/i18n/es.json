@@ -284,5 +284,16 @@
   "rev.error": "No se ha podido guardar: {e}",
   "rev.notes": "Notas guardadas",
   "rev.reviewed": "Revisado",
-  "rev.pending": "Para revisar"
+  "rev.pending": "Para revisar",
+  "fig.dh.title": "Cabezal divisor",
+  "fig.dh.worm": "tornillo sinfín",
+  "fig.dh.wheel": "corona",
+  "fig.dh.piece": "pieza (divisiones)",
+  "fig.dh.spindle": "husillo principal",
+  "fig.dh.plate": "plato de agujeros (fijo)",
+  "fig.dh.crank": "manivela",
+  "fig.dh.relation": "{K} vueltas de manivela = 1 vuelta de la pieza",
+  "fig.dh.front": "Plato de agujeros, de frente",
+  "fig.dh.question": "Para dividir la pieza en {N} partes: ¿cuántas vueltas enteras y cuántos agujeros en qué círculo?",
+  "fig.dh.answer": "Por división: {turns} vueltas enteras + {holes} agujeros en el círculo de {circle} (entre los brazos del sector)."
 }

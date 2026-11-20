@@ -35,7 +35,9 @@ export type Block =
   | ({ t: 'example'; chain: ChainJSON; state?: State } & Bi)
   | ({ t: 'note'; kind: 'careful' | 'ope' } & Bi)
   | { t: 'widget'; w: 'gearbox' | 'gears' | 'rack' }
-  | { t: 'schema'; chain: ChainJSON; state?: State };
+  | { t: 'schema'; chain: ChainJSON; state?: State }
+  /** Dedicated figure (dividing head): numbers from the data, answer from the solver. */
+  | { t: 'figure'; f: 'dividing-head'; K: number; N: number; plates: number[][] };
 
 export interface Topic {
   id: string;

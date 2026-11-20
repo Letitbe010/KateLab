@@ -75,7 +75,7 @@ export const LAYOUT = {
   maxGap: 150,
   rackExtra: 46, // extra space under a shaft that drives a rack
   colGear: 46,
-  colCluster: 28,
+  colCluster: 36, // minimum spacing of the fixed gears of a sliding block
   colBelt: 60,
   colWorm: 64,
   colLinear: 150,
@@ -176,7 +176,7 @@ export function autoLayout(chain: Chain): SchemaLayout {
     const isCluster = g.length > 1 || clusterOf.has((g[0] as Element).id);
     const x0 = x;
     g.forEach((e, k) => {
-      if (k > 0) x += L.colCluster;
+      if (k > 0) x += Math.max(L.colCluster, g.length * SLIDE_PITCH + 2); // room for the block to slide
       const gap = span(e);
       let r1 = 0;
       let r2 = 0;
@@ -275,7 +275,7 @@ export function autoLayout(chain: Chain): SchemaLayout {
     if (!isLinearEl(e)) {
       const y2 = yOf(e.to);
       top = Math.min(top, y2 - p.r2 - 24);
-      bottom = Math.max(bottom, y2 + p.r2 + (clusterOf.has(e.id) ? 54 : 24));
+      bottom = Math.max(bottom, y2 + p.r2 + (clusterOf.has(e.id) ? 72 : 24));
     } else if (e.kind === 'rack') bottom = Math.max(bottom, y1 + p.r1 + 50);
     else top = Math.min(top, y1 - 60);
   }
@@ -341,4 +341,59 @@ export function roman(n: number): string {
       n -= v;
     }
   return out;
+}
+
+// ---------------------------------------------------------------------------
+/** Block pitch (SVG units) of a sliding block: gear width 14 + 1. */
+export const SLIDE_PITCH = 15;
+export const GEAR_W = 14;
+
+/** Gears on the sliding shaft of a cluster (k) and their fixed mates (m), with the gap between the two shafts. */
+function slideGeometry(chain: Chain, L: SchemaLayout, cid: string) {
+  const c = chain.clusters.find((x) => x.id === cid);
+  const cl = L.clusters[cid];
+  if (!c || !cl || c.options.length < 2) return null;
+  const g: { id: string; pos: number; rSlide: number; rFixed: number; gap: number }[] = [];
+  for (const id of c.options) {
+    const e = chain.elements.find((x) => x.id === id);
+    const p = L.elements[id];
+    if (!e || !p || e.kind !== 'gear' || e.internal || (e.from !== cl.shaft && e.to !== cl.shaft)) return null;
+    const a = L.shafts[e.from];
+    const b = L.shafts[e.to];
+    if (!a || !b || a.o !== b.o) return null;
+    const slidesFrom = e.from === cl.shaft;
+    g.push({ id, pos: p.at, rSlide: slidesFrom ? p.r1 : p.r2, rFixed: slidesFrom ? p.r2 : p.r1, gap: Math.abs(a.c - b.c) });
+  }
+  return g;
+}
+
+/**
+ * Sliding block of a cluster: the gears on the sliding shaft are drawn side by side
+ * (pitch SLIDE_PITCH, in the order of their mates) and the block is shifted so that
+ * only the selected pair is in mesh. In every position no block gear may overlap a
+ * fixed gear it reaches radially, except its selected mate. Returns null (static
+ * drawing) when the cluster is not a set of parallel spur gears or the fixed gears
+ * are too close together for that.
+ */
+export function slidePlan(chain: Chain, L: SchemaLayout, cid: string, selected: string | undefined): { base: Record<string, number>; d: number; hub: [number, number] } | null {
+  const g = slideGeometry(chain, L, cid);
+  if (!g) return null;
+  const rank = [...g.keys()].sort((i, j) => (g[i] as (typeof g)[0]).pos - (g[j] as (typeof g)[0]).pos);
+  const p0 = Math.min(...g.map((x) => x.pos));
+  const base: Record<string, number> = {};
+  rank.forEach((i, r) => (base[(g[i] as (typeof g)[0]).id] = p0 + r * SLIDE_PITCH));
+  const shift = (j: number) => (g[j] as (typeof g)[0]).pos - (base[(g[j] as (typeof g)[0]).id] as number);
+  for (let j = 0; j < g.length; j++)
+    for (let k = 0; k < g.length; k++)
+      for (let m = 0; m < g.length; m++) {
+        if (k === j && m === j) continue;
+        const bk = g[k] as (typeof g)[0];
+        const fm = g[m] as (typeof g)[0];
+        const axial = Math.abs((base[bk.id] as number) + shift(j) - fm.pos) < GEAR_W + 1;
+        const radial = bk.rSlide + fm.rFixed > fm.gap - 0.5;
+        if (axial && radial) return null;
+      }
+  const ids = g.map((x) => x.id);
+  const j = Math.max(0, ids.indexOf(selected ?? (ids[0] as string)));
+  return { base, d: shift(j), hub: [p0 - 10, p0 + (g.length - 1) * SLIDE_PITCH + 10] };
 }

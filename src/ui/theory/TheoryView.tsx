@@ -9,6 +9,8 @@ import { chainFromJSON } from '../../core/model';
 import { fillTemplate } from '../../core/template';
 import { useT } from '../../i18n';
 import { KinematicSchema } from '../KinematicSchema';
+import { DividingHead } from '../figures/DividingHead';
+import { indexingSolutions } from '../../core/indexing';
 import { hrefOf } from '../router';
 import { TheoryWidget } from './widgets';
 
@@ -50,6 +52,8 @@ function BlockView({ b }: { b: Block }) {
     }
     case 'schema':
       return <KinematicSchema chain={chainFromJSON(b.chain)} state={b.state ?? {}} lang={lang} locked highlight={false} />;
+    case 'figure':
+      return <DividingHead K={b.K} N={b.N} plates={b.plates} answer={indexingSolutions(b.K, b.N, b.plates)[0] ?? null} />;
     case 'widget':
       return <TheoryWidget w={b.w} />;
   }

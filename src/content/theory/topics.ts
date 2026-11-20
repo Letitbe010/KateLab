@@ -4,8 +4,12 @@
  * {{…}} variables computed by the solver (src/core/template.ts).
  */
 import type { ChainJSON } from '../../core/model';
+import plates from '../../data/plates.json';
 import status from './status.json';
 import type { Topic } from './types';
+
+/** Brown & Sharpe hole circles (src/data/plates.json, approved by the user). */
+const BS_PLATES = (plates.sets.find((s) => s.id === 'brown-sharpe') ?? plates.sets[0]!).plates;
 
 const S = (...ids: string[]) => ids.map((id) => ({ id, label: id }));
 const VP = { eu: 'motorraren aldetik begiratuta', es: 'mirando desde el motor' };
@@ -371,6 +375,7 @@ const RAW_TOPICS: Topic[] = [
         eu: 'Buru zatitzaileak torloju amaigabe eta gurpil bat ditu, K erlazioarekin (normalean K = 40): biraderaren K birak buruaren bira oso bat dira. Pieza N zati berdinetan banatzeko, zati bakoitzeko K/N bira eman behar dira.',
         es: 'El cabezal divisor tiene un tornillo sinfín y una corona de relación K (normalmente K = 40): K vueltas de la manivela son una vuelta del cabezal. Para dividir la pieza en N partes iguales hay que dar K/N vueltas por parte.',
       },
+      { t: 'figure', f: 'dividing-head', K: 40, N: 24, plates: BS_PLATES },
       { t: 'f', tex: '\\text{birak} = \\frac{K}{N} = \\text{bira osoak} + \\frac{\\text{zuloak}}{\\text{zirkulua}}', check: 'indexing' },
       {
         t: 'example',
