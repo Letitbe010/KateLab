@@ -23,7 +23,7 @@ const ROOT = resolve(__dirname, '..');
 const OUT = resolve(ROOT, 'tools/oracle/out/oracle.json');
 const RANDOM = resolve(ROOT, 'tests/oracle/random-chains.json');
 const GENERATED = resolve(ROOT, 'tests/oracle/generated-chains.json');
-const POOL = ['src/data/pool/ope-euskadi-2020.json', 'src/data/pool/generated.json', 'src/data/pool/basics.json', 'src/data/pool/ope-madrid-2025.json', 'src/data/pool/adapted.json'].map((p) => resolve(ROOT, p));
+const POOL = ['src/data/pool/ope-euskadi-2020.json', 'src/data/pool/generated.json', 'src/data/pool/basics.json', 'src/data/pool/ope-madrid-2025.json', 'src/data/pool/adapted.json', 'src/data/pool/ope-murtzia-2021.json'].map((p) => resolve(ROOT, p));
 
 interface OracleState {
   ok: boolean;

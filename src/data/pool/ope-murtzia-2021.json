@@ -1,0 +1,108 @@
+{
+  "id": "ope-murtzia-2021-4",
+  "origin": "ope",
+  "title": {
+    "eu": "Murtzia OPE 2021 — Uhala eta bi abiadurako kaxa",
+    "es": "OPE Murcia 2021 — Correa y caja de dos velocidades"
+  },
+  "sourceNote": "Murtziako Eskualdea, OPE 2021 (2021-01-25eko agindua), 0590-112, A zatia, 4. ariketa, 2. atala (kate zinematikoaren birak). Datuak 11. orriko taulatik irakurriak (Z1 = 57, Z2 = 117, Z3 = 131, Z4 = 43; D1 = 50 mm, D2 = 200 mm; motorra 1250 rpm, 3,1 kW). Z1–Z2 eta Z3–Z4 pareek batura bera dute (174), multzo labainkorrari dagokion bezala. Ariketaren gainerako atalak (uhalaren luzera, modulua erresistentziaz, ardatzaren diametroa, zatiketa diferentziala) ez daude KateLab-en. Iturria: erabiltzailearen karpetako PDFa (Murtzia_2021_0590-112_A_zatia.pdf).",
+  "difficulty": 1,
+  "archetype": "abiadura-kaxa",
+  "review": "review-needed",
+  "chain": {
+    "shafts": [
+      {
+        "id": "M",
+        "label": "M"
+      },
+      {
+        "id": "A1",
+        "label": "1"
+      },
+      {
+        "id": "A2",
+        "label": "2"
+      }
+    ],
+    "elements": [
+      {
+        "kind": "belt",
+        "id": "u",
+        "from": "M",
+        "to": "A1",
+        "d1": "50",
+        "d2": "200"
+      },
+      {
+        "kind": "gear",
+        "id": "g12",
+        "from": "A1",
+        "to": "A2",
+        "z1": 57,
+        "z2": 117
+      },
+      {
+        "kind": "gear",
+        "id": "g34",
+        "from": "A1",
+        "to": "A2",
+        "z1": 131,
+        "z2": 43
+      }
+    ],
+    "clusters": [
+      {
+        "id": "K",
+        "label": "K",
+        "options": [
+          "g12",
+          "g34"
+        ]
+      }
+    ],
+    "input": {
+      "shaft": "M",
+      "n": "1250",
+      "power": "3100"
+    }
+  },
+  "asks": [
+    {
+      "type": "speed",
+      "shaft": "A1",
+      "state": {
+        "K": "g12"
+      },
+      "label": {
+        "eu": "a) 1. ardatzaren biraketa-abiadura (rpm).",
+        "es": "a) Velocidad de giro del árbol 1 (rpm)."
+      }
+    },
+    {
+      "type": "speed",
+      "shaft": "A2",
+      "state": {
+        "K": "g12"
+      },
+      "label": {
+        "eu": "b) 2. ardatzaren abiadura, Z1–Z2 engranatuta daudela (rpm).",
+        "es": "b) Velocidad del árbol 2 con Z1–Z2 engranadas (rpm)."
+      }
+    },
+    {
+      "type": "speed",
+      "shaft": "A2",
+      "state": {
+        "K": "g34"
+      },
+      "label": {
+        "eu": "c) 2. ardatzaren abiadura, Z3–Z4 engranatuta daudela (rpm).",
+        "es": "c) Velocidad del árbol 2 con Z3–Z4 engranadas (rpm)."
+      }
+    }
+  ],
+  "text": {
+    "eu": "Motor batek (3,1 kW, 1250 rpm) bi polea trapezialen bidez (D1 = Ø50 mm motorrean, D2 = Ø200 mm 1. ardatzean) abiadura-kaxa bati ematen dio higidura. Kaxak bi ardatz ditu: 1. ardatzetik sartzen da higidura eta 2. ardatzetik ateratzen da, eta transmisio-erlazioa engranaje mugikorren bidez aldatzen da: Z1 = 57 / Z2 = 117 edo Z3 = 131 / Z4 = 43 (Z1 eta Z3 1. ardatzean). Kalkulatu kate zinematikoaren birak.",
+    "es": "Un motor (3,1 kW, 1250 rpm) transmite el movimiento mediante dos poleas trapeciales (D1 = Ø50 mm en el motor, D2 = Ø200 mm en el árbol 1) a una caja de cambios. La caja tiene dos árboles: recibe el movimiento por el árbol 1 y lo transmite por el árbol 2, modificándose la relación de transmisión por medio de engranajes móviles: Z1 = 57 / Z2 = 117 o Z3 = 131 / Z4 = 43 (Z1 y Z3 en el árbol 1). Calcula las revoluciones de la cadena cinemática."
+  }
+}
