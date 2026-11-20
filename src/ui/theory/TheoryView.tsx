@@ -10,6 +10,7 @@ import { fillTemplate } from '../../core/template';
 import { useT } from '../../i18n';
 import { KinematicSchema } from '../KinematicSchema';
 import { DividingHead } from '../figures/DividingHead';
+import { BeltFigure, FeedFigure, GearTrainFigure, LiraFigure, PowerFigure, ScrewFigure, SymbolsFigure, ToothFigure, WormFigure } from '../figures/Mechanisms';
 import { indexingSolutions } from '../../core/indexing';
 import { hrefOf } from '../router';
 import { TheoryWidget } from './widgets';
@@ -53,9 +54,35 @@ function BlockView({ b }: { b: Block }) {
     case 'schema':
       return <KinematicSchema chain={chainFromJSON(b.chain)} state={b.state ?? {}} lang={lang} locked highlight={false} />;
     case 'figure':
-      return <DividingHead K={b.K} N={b.N} plates={b.plates} answer={indexingSolutions(b.K, b.N, b.plates)[0] ?? null} />;
+      return <TheoryFigure b={b} />;
     case 'widget':
       return <TheoryWidget w={b.w} />;
+  }
+}
+
+/** Dedicated figure of a theory block. */
+export function TheoryFigure({ b }: { b: Extract<Block, { t: 'figure' }> }) {
+  switch (b.f) {
+    case 'dividing-head':
+      return <DividingHead K={b.K} N={b.N} plates={b.plates} answer={indexingSolutions(b.K, b.N, b.plates)[0] ?? null} />;
+    case 'train':
+      return <GearTrainFigure chain={b.chain} />;
+    case 'belt':
+      return <BeltFigure chain={b.chain} />;
+    case 'worm':
+      return <WormFigure chain={b.chain} />;
+    case 'screw':
+      return <ScrewFigure chain={b.chain} />;
+    case 'power':
+      return <PowerFigure chain={b.chain} />;
+    case 'tooth':
+      return <ToothFigure chain={b.chain} element={b.element} />;
+    case 'feed':
+      return <FeedFigure chain={b.chain} output={b.output} spindle={b.spindle} />;
+    case 'lira':
+      return <LiraFigure threadPitch={b.threadPitch} leadScrewPitch={b.leadScrewPitch} />;
+    case 'symbols':
+      return <SymbolsFigure />;
   }
 }
 

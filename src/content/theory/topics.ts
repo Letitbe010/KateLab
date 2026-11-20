@@ -43,6 +43,8 @@ const BELT_SLIP: ChainJSON = {
   elements: [{ kind: 'belt', id: 'u', from: 'I', to: 'II', d1: '100', d2: '250', slip: '0,02' }],
   input: { shaft: 'I', n: '1500' },
 };
+/** Same drive with a crossed belt (figure only). */
+const BELT_X: ChainJSON = { ...BELT, elements: [{ kind: 'belt', id: 'u', from: 'I', to: 'II', d1: '100', d2: '250', crossed: true }] };
 const WORM: ChainJSON = {
   shafts: S('I', 'II'),
   elements: [{ kind: 'worm', id: 'w', from: 'I', to: 'II', starts: 1, z: 40 }],
@@ -128,6 +130,7 @@ const RAW_TOPICS: Topic[] = [
           'Cremallera y husillo de avance: convierten el giro en traslación (en azul).',
         ],
       },
+      { t: 'figure', f: 'symbols' },
       { t: 'schema', chain: KG1 },
       {
         t: 'p',
@@ -179,6 +182,7 @@ const RAW_TOPICS: Topic[] = [
         es: 'En un tren la velocidad se multiplica etapa a etapa; por tanto, la relación total es el producto de las relaciones de todas las etapas.',
       },
       { t: 'f', tex: 'i_{\\text{osoa}} = \\prod_k \\frac{Z_{\\text{eragilea},k}}{Z_{\\text{eragina},k}}', check: 'train-product' },
+      { t: 'figure', f: 'train', chain: KG1 },
       {
         t: 'example',
         chain: KG1,
@@ -195,7 +199,7 @@ const RAW_TOPICS: Topic[] = [
         eu: ['Kanpo-engranatzea: noranzkoa alderantzikatzen du.', 'Barne-engranajea: noranzkoa mantentzen du.', 'Uhal irekia eta katea: mantentzen dute.', 'Uhal gurutzatua: alderantzikatzen du.', 'Noranzkoa ikuspuntu finko batetik adierazten da beti (adib. motorraren aldetik).'],
         es: ['Engrane exterior: invierte el sentido.', 'Engranaje interior: lo mantiene.', 'Correa abierta y cadena: lo mantienen.', 'Correa cruzada: lo invierte.', 'El sentido se indica siempre desde un punto de vista fijo (p. ej. desde el motor).'],
       },
-      { t: 'schema', chain: IDLER },
+      { t: 'figure', f: 'train', chain: IDLER },
       {
         t: 'example',
         chain: IDLER,
@@ -215,6 +219,8 @@ const RAW_TOPICS: Topic[] = [
         es: 'La correa une dos poleas: sin deslizamiento, la velocidad lineal de la correa es la misma en ambas y las velocidades son inversamente proporcionales a los diámetros. En la cadena se usan números de dientes, como en los engranajes.',
       },
       { t: 'f', tex: '\\pi D_1 n_1 = \\pi D_2 n_2 \\;\\Rightarrow\\; n_2 = n_1\\,\\frac{D_1}{D_2}\\,(1 - s)', check: 'belt-ratio' },
+      { t: 'figure', f: 'belt', chain: BELT_SLIP },
+      { t: 'figure', f: 'belt', chain: BELT_X },
       {
         t: 'example',
         chain: BELT,
@@ -241,6 +247,7 @@ const RAW_TOPICS: Topic[] = [
         es: 'En cada vuelta del tornillo sinfín la corona avanza k dientes, siendo k el número de entradas del tornillo. Por eso se consiguen relaciones muy grandes en una sola etapa.',
       },
       { t: 'f', tex: 'n_{\\text{gurpila}} = n_{\\text{torlojua}}\\,\\frac{k}{Z}', check: 'worm-ratio' },
+      { t: 'figure', f: 'worm', chain: WORM },
       {
         t: 'example',
         chain: WORM,
@@ -267,6 +274,7 @@ const RAW_TOPICS: Topic[] = [
       },
       { t: 'f', tex: 'd = m Z \\qquad d_a = m (Z + 2) \\qquad d_f = m (Z - 2{,}5) \\qquad h = 2{,}25\\, m \\qquad p = \\pi m', check: 'tooth-geometry' },
       { t: 'f', tex: 'a = \\frac{d_1 + d_2}{2} = \\frac{m (Z_1 + Z_2)}{2}\\quad(\\text{kanpokoa})\\qquad a = \\frac{m (Z_2 - Z_1)}{2}\\quad(\\text{barnekoa})', check: 'centre-distance' },
+      { t: 'figure', f: 'tooth', chain: KG1, element: 'g1' },
       {
         t: 'example',
         chain: KG1,
@@ -337,6 +345,7 @@ const RAW_TOPICS: Topic[] = [
         es: 'En cada vuelta del husillo de avance la tuerca avanza el avance por vuelta: avance por vuelta = número de entradas × paso.',
       },
       { t: 'f', tex: 'P_h = k\\,P \\qquad v = n\\,P_h = n\\,k\\,P', check: 'screw-speed' },
+      { t: 'figure', f: 'screw', chain: SCREW2 },
       {
         t: 'example',
         chain: SCREW2,
@@ -356,6 +365,7 @@ const RAW_TOPICS: Topic[] = [
         es: 'El avance se liga al eje principal: cuántos milímetros avanza la herramienta en cada vuelta de la pieza (o de la fresa). Por eso la cadena de avances suele partir de la cadena del eje principal.',
       },
       { t: 'f', tex: 'f = \\frac{v}{n_{\\text{ardatza}}}\\;[\\text{mm/bira}] \\qquad v = f\\cdot n_{\\text{ardatza}}\\;[\\text{mm/min}]', check: 'feed-per-rev' },
+      { t: 'figure', f: 'feed', chain: SCREW, output: 'T', spindle: 'AN' },
       {
         t: 'example',
         chain: SCREW,
@@ -397,6 +407,7 @@ const RAW_TOPICS: Topic[] = [
         es: 'Para roscar en el torno, en cada vuelta del eje principal el carro debe avanzar el paso de la rosca. El husillo patrón avanza su paso por vuelta; por tanto, el tren de ruedas de recambio debe dar esta relación:',
       },
       { t: 'f', tex: 'i = \\frac{P_{\\text{haria}}}{P_{\\text{torlojua}}} = \\frac{Z_a \\cdot Z_c}{Z_b \\cdot Z_d}', check: 'change-gears' },
+      { t: 'figure', f: 'lira', threadPitch: '1,5', leadScrewPitch: '6' },
       {
         t: 'example',
         chain: KG1,
@@ -429,6 +440,7 @@ const RAW_TOPICS: Topic[] = [
         es: 'Cada etapa tiene un rendimiento (η ≤ 1): la potencia nunca aumenta. Al reducir la velocidad, el par aumenta.',
       },
       { t: 'f', tex: 'P_{\\text{irteera}} = P\\prod \\eta,\\qquad T_{\\text{irteera}} = T_{\\text{sarrera}}\\,\\frac{1}{i}\\prod \\eta', check: 'power-efficiency' },
+      { t: 'figure', f: 'power', chain: POWER },
       {
         t: 'example',
         chain: POWER,

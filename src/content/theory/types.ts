@@ -37,7 +37,12 @@ export type Block =
   | { t: 'widget'; w: 'gearbox' | 'gears' | 'rack' }
   | { t: 'schema'; chain: ChainJSON; state?: State }
   /** Dedicated figure (dividing head): numbers from the data, answer from the solver. */
-  | { t: 'figure'; f: 'dividing-head'; K: number; N: number; plates: number[][] };
+  | { t: 'figure'; f: 'dividing-head'; K: number; N: number; plates: number[][] }
+  | { t: 'figure'; f: 'train' | 'belt' | 'worm' | 'screw' | 'power'; chain: ChainJSON }
+  | { t: 'figure'; f: 'tooth'; chain: ChainJSON; element: string }
+  | { t: 'figure'; f: 'feed'; chain: ChainJSON; output: string; spindle: string }
+  | { t: 'figure'; f: 'lira'; threadPitch: string; leadScrewPitch: string }
+  | { t: 'figure'; f: 'symbols' };
 
 export interface Topic {
   id: string;
