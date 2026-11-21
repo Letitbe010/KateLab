@@ -1,0 +1,56 @@
+{
+  "id": "ope-murtzia-2023-2",
+  "origin": "ope",
+  "title": {
+    "eu": "Murtzia OPE 2023 — Garaje-ate lerragarria",
+    "es": "OPE Murcia 2023 — Puerta corredera de garaje"
+  },
+  "sourceNote": "Murtziako Eskualdea, OPE 2023, 590112, B2 zatia, 2. ariketa, 3. galdera. \"Bi hortz bost zentimetroko\" kremailera: pausoa p = 50/2 = 25 mm. Abiadura mm/min-tan eskatzen da (6000 mm/min = 6 m/min); m/min unitatea ez dago KateLab-en. Pinoiaren birak (3 m) eta irekitze-denbora ez dira galdera-motak: 3000 / (10 · 25) = 12 bira eta 12 / 24 = 0,5 min. Iturria: erabiltzailearen karpetako PDFa.",
+  "difficulty": 1,
+  "archetype": "elikadura-kremailera",
+  "review": "review-needed",
+  "chain": {
+    "shafts": [
+      {
+        "id": "P",
+        "label": "P"
+      }
+    ],
+    "linear": [
+      {
+        "id": "D",
+        "label": "atea"
+      }
+    ],
+    "elements": [
+      {
+        "kind": "rack",
+        "id": "r",
+        "from": "P",
+        "output": "D",
+        "z": 10,
+        "pitch": "25"
+      }
+    ],
+    "clusters": [],
+    "input": {
+      "shaft": "P",
+      "n": "24"
+    }
+  },
+  "asks": [
+    {
+      "type": "linearSpeed",
+      "output": "D",
+      "unit": "mm/min",
+      "label": {
+        "eu": "Atearen desplazamendu-abiadura (mm/min; 1 m/min = 1000 mm/min).",
+        "es": "Velocidad de desplazamiento de la puerta (mm/min; 1 m/min = 1000 mm/min)."
+      }
+    }
+  ],
+  "text": {
+    "eu": "Garaje-ate lerragarri baten irekiera eta itxiera pinoi-kremailera sistema batek kontrolatzen du. Kremailerak bi hortz ditu bost zentimetro bakoitzeko, eta pinoiak 10 hortz. Motorrak (pinoiak) 24 rpm-tan biratzen du. Atea irekitzeko 3 metro mugitu behar da.",
+    "es": "El control de apertura/cierre de una puerta corredera de garaje se gobierna mediante un sistema de piñón–cremallera. La cremallera tiene dos dientes por cada cinco centímetros y el piñón 10 dientes. El motor (piñón) gira a 24 rpm. Para abrirse, la puerta debe desplazarse tres metros."
+  }
+}

@@ -40,8 +40,12 @@ export function stateText(ex: KinExercise, st: State | undefined): string {
   return ex.chain.clusters.map((c) => `${c.label}: ${elementName(ex, st[c.id] ?? '')}`).join(' · ');
 }
 
+/** "a) Text" / "2) Text" → "Text". */
+export const stripMarker = (s: string): string => s.replace(/^\s*[a-z0-9]{1,2}\)\s+/i, '');
+
 export function askLabel(ex: KinExercise, ask: Ask, lang: Lang): string {
-  if (ask.label) return ask.label[lang];
+  // the form adds its own letter (a), b)…): drop the exam's own marker to avoid "a) a)"
+  if (ask.label) return stripMarker(ask.label[lang]);
   const t = (k: string, v: Record<string, string | number> = {}) => translate(lang, k, v);
   switch (ask.type) {
     case 'speed':

@@ -1,0 +1,63 @@
+{
+  "id": "ope-valentzia-2025-b2",
+  "origin": "ope",
+  "title": {
+    "eu": "Valentzia OPE 2025 — Engranaje-parea, abiadura eta momentua",
+    "es": "OPE Comunidad Valenciana 2025 — Par de engranajes, velocidad y par"
+  },
+  "sourceNote": "Valentziako Erkidegoa, OPE 2025, 224 espezialitatea (Organización y Proyectos de Fabricación Mecánica), lehen proba, B zatia, B.2 ariketa, 1) eta 2) galderak. B gurpilaren modulua (A-ren bera, m = 4, engranatzen direlako) testuan justifikatzen da, ez da galdera gisa zuzentzen. 3) galdera (txabetaren luzera) ez dago KateLab-en. Iturria: erabiltzailearen karpetako PDFa.",
+  "difficulty": 1,
+  "archetype": "potentzia",
+  "review": "review-needed",
+  "chain": {
+    "shafts": [
+      {
+        "id": "A",
+        "label": "A"
+      },
+      {
+        "id": "B",
+        "label": "B"
+      }
+    ],
+    "elements": [
+      {
+        "kind": "gear",
+        "id": "g",
+        "from": "A",
+        "to": "B",
+        "z1": 50,
+        "z2": 25,
+        "module": "4"
+      }
+    ],
+    "clusters": [],
+    "input": {
+      "shaft": "A",
+      "n": "1200",
+      "power": "100000"
+    }
+  },
+  "asks": [
+    {
+      "type": "speed",
+      "shaft": "B",
+      "label": {
+        "eu": "a) B gurpilaren biraketa-abiadura (rpm). (Modulua: A-ren bera, m = 4, engranatzen direlako.)",
+        "es": "a) Velocidad de rotación de la rueda B (rpm). (Módulo: el mismo que A, m = 4, porque engranan.)"
+      }
+    },
+    {
+      "type": "torquePower",
+      "shaft": "A",
+      "label": {
+        "eu": "b) Motorrak engranajeari transmititzen dion momentua (eta potentzia).",
+        "es": "b) Par transmitido por el motor al engranaje (y potencia)."
+      }
+    }
+  ],
+  "text": {
+    "eu": "Motor elektriko batek altzairuzko ardatz bat biratzen du, eta 100 kW-eko potentzia transmititzen dio engranaje bati. Engranajeak A gurpila (50 hortz, m = 4) eta B gurpila (25 hortz) ditu. Ardatzaren biraketa-abiadura 1200 rpm da.",
+    "es": "Un motor eléctrico hace girar un eje sólido circular de acero, transmitiendo una potencia de 100 kW a un engranaje. El engranaje está compuesto por una rueda A, de 50 dientes y módulo 4, y una rueda B, de 25 dientes. La velocidad de rotación del eje es de 1200 rpm."
+  }
+}
