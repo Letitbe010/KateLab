@@ -8,7 +8,7 @@
   "sourceNote": "Murtziako Eskualdea, OPE 2023, 590112, B2 zatia, 2. ariketa, 3. galdera. \"Bi hortz bost zentimetroko\" kremailera: pausoa p = 50/2 = 25 mm. Abiadura mm/min-tan eskatzen da (6000 mm/min = 6 m/min); m/min unitatea ez dago KateLab-en. Pinoiaren birak (3 m) eta irekitze-denbora ez dira galdera-motak: 3000 / (10 · 25) = 12 bira eta 12 / 24 = 0,5 min. Iturria: erabiltzailearen karpetako PDFa.",
   "difficulty": 1,
   "archetype": "elikadura-kremailera",
-  "review": "review-needed",
+  "review": "reviewed",
   "chain": {
     "shafts": [
       {

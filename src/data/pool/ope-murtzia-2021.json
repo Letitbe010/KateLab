@@ -8,7 +8,7 @@
   "sourceNote": "Murtziako Eskualdea, OPE 2021 (2021-01-25eko agindua), 0590-112, A zatia, 4. ariketa, 2. atala (kate zinematikoaren birak). Datuak 11. orriko taulatik irakurriak (Z1 = 57, Z2 = 117, Z3 = 131, Z4 = 43; D1 = 50 mm, D2 = 200 mm; motorra 1250 rpm, 3,1 kW). Z1–Z2 eta Z3–Z4 pareek batura bera dute (174), multzo labainkorrari dagokion bezala. Ariketaren gainerako atalak (uhalaren luzera, modulua erresistentziaz, ardatzaren diametroa, zatiketa diferentziala) ez daude KateLab-en. Iturria: erabiltzailearen karpetako PDFa (Murtzia_2021_0590-112_A_zatia.pdf).",
   "difficulty": 1,
   "archetype": "abiadura-kaxa",
-  "review": "review-needed",
+  "review": "reviewed",
   "chain": {
     "shafts": [
       {

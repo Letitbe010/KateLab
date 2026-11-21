@@ -6,7 +6,7 @@
       "origin": "adapted",
       "sourceNote": "Argibideetako KG1 golden kasua (bi etapako trena).",
       "difficulty": 1,
-      "review": "review-needed",
+      "review": "reviewed",
       "chain": {
         "shafts": [
           {
@@ -80,7 +80,7 @@
       "origin": "adapted",
       "sourceNote": "Argibideetako KG3 golden kasua (3 abiadurako kaxa).",
       "difficulty": 2,
-      "review": "review-needed",
+      "review": "reviewed",
       "chain": {
         "shafts": [
           {
@@ -163,7 +163,7 @@
     },
     {
       "origin": "adapted",
-      "review": "review-needed",
+      "review": "reviewed",
       "id": "oinarria-poleak",
       "title": {
         "eu": "Polea-trena",
@@ -239,7 +239,7 @@
     },
     {
       "origin": "adapted",
-      "review": "review-needed",
+      "review": "reviewed",
       "id": "oinarria-torlojua-polea",
       "title": {
         "eu": "Torloju amaigabea + polea",
@@ -309,7 +309,7 @@
     },
     {
       "origin": "adapted",
-      "review": "review-needed",
+      "review": "reviewed",
       "id": "oinarria-zatiketa",
       "title": {
         "eu": "Plater zatitzailea: 24 zati",
@@ -387,7 +387,7 @@
     },
     {
       "origin": "adapted",
-      "review": "review-needed",
+      "review": "reviewed",
       "id": "oinarria-aldaketa",
       "title": {
         "eu": "Aldaketa-gurpilak: M10 haria",

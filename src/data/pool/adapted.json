@@ -7,29 +7,82 @@
       "sourceNote": "Andaluziako goi-mailako zikloetarako sarbide-proba, 2020, Teknologia Industriala (hiru etapako engranaje-trena). Datuak aldatuta; jatorrizko alderantzizko atala (irteeratik sarrerara) ez da sartu.",
       "sourceUrl": "https://www.educalive.com/DOCUMENTOS/EXAMENES_ACCESO_GRADO_SUPERIOR/ANDALUCIA/2020/Examen_Tecnologia_Industrial_Prueba_Acceso_Grado_Superior_Andalucia_2020.pdf",
       "difficulty": 1,
-      "review": "review-needed",
+      "review": "reviewed",
       "archetype": "tren-sinplea",
-      "title": { "eu": "Hiru etapako erreduktorea", "es": "Reductor de tres etapas" },
+      "title": {
+        "eu": "Hiru etapako erreduktorea",
+        "es": "Reductor de tres etapas"
+      },
       "chain": {
         "shafts": [
-          { "id": "I", "label": "I" },
-          { "id": "II", "label": "II" },
-          { "id": "III", "label": "III" },
-          { "id": "IV", "label": "IV" }
+          {
+            "id": "I",
+            "label": "I"
+          },
+          {
+            "id": "II",
+            "label": "II"
+          },
+          {
+            "id": "III",
+            "label": "III"
+          },
+          {
+            "id": "IV",
+            "label": "IV"
+          }
         ],
         "elements": [
-          { "kind": "gear", "id": "g12", "from": "I", "to": "II", "z1": 18, "z2": 54 },
-          { "kind": "gear", "id": "g23", "from": "II", "to": "III", "z1": 20, "z2": 50 },
-          { "kind": "gear", "id": "g34", "from": "III", "to": "IV", "z1": 24, "z2": 48 }
+          {
+            "kind": "gear",
+            "id": "g12",
+            "from": "I",
+            "to": "II",
+            "z1": 18,
+            "z2": 54
+          },
+          {
+            "kind": "gear",
+            "id": "g23",
+            "from": "II",
+            "to": "III",
+            "z1": 20,
+            "z2": 50
+          },
+          {
+            "kind": "gear",
+            "id": "g34",
+            "from": "III",
+            "to": "IV",
+            "z1": 24,
+            "z2": 48
+          }
         ],
         "clusters": [],
-        "input": { "shaft": "I", "n": "1500", "direction": "cw" },
-        "viewpoint": { "eu": "motorraren aldetik begiratuta", "es": "mirando desde el motor" }
+        "input": {
+          "shaft": "I",
+          "n": "1500",
+          "direction": "cw"
+        },
+        "viewpoint": {
+          "eu": "motorraren aldetik begiratuta",
+          "es": "mirando desde el motor"
+        }
       },
       "asks": [
-        { "type": "ratio", "from": "I", "to": "IV" },
-        { "type": "speed", "shaft": "IV" },
-        { "type": "direction", "shaft": "IV" }
+        {
+          "type": "ratio",
+          "from": "I",
+          "to": "IV"
+        },
+        {
+          "type": "speed",
+          "shaft": "IV"
+        },
+        {
+          "type": "direction",
+          "shaft": "IV"
+        }
       ],
       "text": {
         "eu": "Erreduktore batek hiru engranaje-pare ditu seriean. Motorrak I ardatza 1500 rpm-tan biratzen du, erlojuaren orratzen noranzkoan (motorraren aldetik begiratuta). Hortz kopuruak eskeman daude.",
@@ -42,25 +95,58 @@
       "sourceNote": "IES Pobra do Caramiñal (Xunta de Galicia), engranajeen ariketak, 2. eta 4. ariketak (engranaje-pare bakarra). Datuak aldatuta.",
       "sourceUrl": "https://edu.xunta.gal/centros/iespobracaraminal/system/files/EJERCICIOS%20DE%20ENGRANAJES_%20SOLUCI%C3%93N.pdf",
       "difficulty": 1,
-      "review": "review-needed",
+      "review": "reviewed",
       "archetype": "tren-sinplea",
-      "title": { "eu": "Engranaje-pare bakarra", "es": "Un único par de engranajes" },
+      "title": {
+        "eu": "Engranaje-pare bakarra",
+        "es": "Un único par de engranajes"
+      },
       "chain": {
         "shafts": [
-          { "id": "I", "label": "I" },
-          { "id": "II", "label": "II" }
+          {
+            "id": "I",
+            "label": "I"
+          },
+          {
+            "id": "II",
+            "label": "II"
+          }
         ],
         "elements": [
-          { "kind": "gear", "id": "g12", "from": "I", "to": "II", "z1": 15, "z2": 60 }
+          {
+            "kind": "gear",
+            "id": "g12",
+            "from": "I",
+            "to": "II",
+            "z1": 15,
+            "z2": 60
+          }
         ],
         "clusters": [],
-        "input": { "shaft": "I", "n": "2800", "direction": "cw" },
-        "viewpoint": { "eu": "motorraren aldetik begiratuta", "es": "mirando desde el motor" }
+        "input": {
+          "shaft": "I",
+          "n": "2800",
+          "direction": "cw"
+        },
+        "viewpoint": {
+          "eu": "motorraren aldetik begiratuta",
+          "es": "mirando desde el motor"
+        }
       },
       "asks": [
-        { "type": "ratio", "from": "I", "to": "II" },
-        { "type": "speed", "shaft": "II" },
-        { "type": "direction", "shaft": "II" }
+        {
+          "type": "ratio",
+          "from": "I",
+          "to": "II"
+        },
+        {
+          "type": "speed",
+          "shaft": "II"
+        },
+        {
+          "type": "direction",
+          "shaft": "II"
+        }
       ],
       "text": {
         "eu": "15 hortzeko engranaje eragileak 2800 rpm-tan biratzen du, erlojuaren orratzen noranzkoan (motorraren aldetik begiratuta), eta 60 hortzeko engranajea eragiten du.",
@@ -73,23 +159,49 @@
       "sourceNote": "IES Pobra do Caramiñal (Xunta de Galicia), engranajeen ariketak, 3. ariketa (abiadura-biderkatzailea). Datuak aldatuta; jatorrian eragilearen abiadura eskatzen da, hemen eragindakoarena.",
       "sourceUrl": "https://edu.xunta.gal/centros/iespobracaraminal/system/files/EJERCICIOS%20DE%20ENGRANAJES_%20SOLUCI%C3%93N.pdf",
       "difficulty": 1,
-      "review": "review-needed",
+      "review": "reviewed",
       "archetype": "tren-sinplea",
-      "title": { "eu": "Abiadura-biderkatzailea", "es": "Multiplicador de velocidad" },
+      "title": {
+        "eu": "Abiadura-biderkatzailea",
+        "es": "Multiplicador de velocidad"
+      },
       "chain": {
         "shafts": [
-          { "id": "I", "label": "I" },
-          { "id": "II", "label": "II" }
+          {
+            "id": "I",
+            "label": "I"
+          },
+          {
+            "id": "II",
+            "label": "II"
+          }
         ],
         "elements": [
-          { "kind": "gear", "id": "g12", "from": "I", "to": "II", "z1": 120, "z2": 30 }
+          {
+            "kind": "gear",
+            "id": "g12",
+            "from": "I",
+            "to": "II",
+            "z1": 120,
+            "z2": 30
+          }
         ],
         "clusters": [],
-        "input": { "shaft": "I", "n": "300" }
+        "input": {
+          "shaft": "I",
+          "n": "300"
+        }
       },
       "asks": [
-        { "type": "ratio", "from": "I", "to": "II" },
-        { "type": "speed", "shaft": "II" }
+        {
+          "type": "ratio",
+          "from": "I",
+          "to": "II"
+        },
+        {
+          "type": "speed",
+          "shaft": "II"
+        }
       ],
       "text": {
         "eu": "Engranaje-sistema batean, gurpil eragileak 120 hortz ditu eta 300 rpm-tan biratzen du; eragindakoak 30 hortz ditu.",
@@ -102,23 +214,49 @@
       "sourceNote": "IES Pobra do Caramiñal (Xunta de Galicia), engranajeen ariketak, 1. ariketa (torloju amaigabea eta gurpila). Datuak aldatuta; jatorrian gurpilaren abiaduratik torlojuarena kalkulatzen da (60 000 rpm), hemen torlojutik gurpilera.",
       "sourceUrl": "https://edu.xunta.gal/centros/iespobracaraminal/system/files/EJERCICIOS%20DE%20ENGRANAJES_%20SOLUCI%C3%93N.pdf",
       "difficulty": 1,
-      "review": "review-needed",
+      "review": "reviewed",
       "archetype": "torloju-amaigabea",
-      "title": { "eu": "Bi sarrerako torloju amaigabea", "es": "Tornillo sinfín de dos entradas" },
+      "title": {
+        "eu": "Bi sarrerako torloju amaigabea",
+        "es": "Tornillo sinfín de dos entradas"
+      },
       "chain": {
         "shafts": [
-          { "id": "I", "label": "I" },
-          { "id": "II", "label": "II" }
+          {
+            "id": "I",
+            "label": "I"
+          },
+          {
+            "id": "II",
+            "label": "II"
+          }
         ],
         "elements": [
-          { "kind": "worm", "id": "w", "from": "I", "to": "II", "starts": 2, "z": 50 }
+          {
+            "kind": "worm",
+            "id": "w",
+            "from": "I",
+            "to": "II",
+            "starts": 2,
+            "z": 50
+          }
         ],
         "clusters": [],
-        "input": { "shaft": "I", "n": "1500" }
+        "input": {
+          "shaft": "I",
+          "n": "1500"
+        }
       },
       "asks": [
-        { "type": "ratio", "from": "I", "to": "II" },
-        { "type": "speed", "shaft": "II" }
+        {
+          "type": "ratio",
+          "from": "I",
+          "to": "II"
+        },
+        {
+          "type": "speed",
+          "shaft": "II"
+        }
       ],
       "text": {
         "eu": "Bi sarrerako torloju amaigabe batek 1500 rpm-tan biratzen du eta 50 hortzeko gurpil helikoidala eragiten du.",

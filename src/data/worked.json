@@ -8,7 +8,7 @@
         "eu": "Bi etapako engranaje-trena",
         "es": "Tren de engranajes de dos etapas"
       },
-      "review": "draft"
+      "review": "reviewed"
     },
     {
       "id": "tartekaria",
@@ -17,7 +17,7 @@
         "eu": "Gurpil tartekaria eta noranzkoa",
         "es": "Rueda intermedia y sentido de giro"
       },
-      "review": "draft"
+      "review": "reviewed"
     },
     {
       "id": "poleak",
@@ -26,7 +26,7 @@
         "eu": "Polea-trena",
         "es": "Tren de poleas"
       },
-      "review": "draft"
+      "review": "reviewed"
     },
     {
       "id": "torlojua-polea",
@@ -35,7 +35,7 @@
         "eu": "Torloju amaigabea + polea",
         "es": "Tornillo sinfín + polea"
       },
-      "review": "draft"
+      "review": "reviewed"
     },
     {
       "id": "kremailera",
@@ -44,7 +44,7 @@
         "eu": "Pinoi-kremailera (Madril OPE 2025)",
         "es": "Piñón-cremallera (OPE Madrid 2025)"
       },
-      "review": "draft"
+      "review": "reviewed"
     },
     {
       "id": "kaxa-3",
@@ -53,7 +53,7 @@
         "eu": "3 abiadurako kaxa eta ardatzen arteko distantzia",
         "es": "Caja de 3 velocidades y distancia entre ejes"
       },
-      "review": "draft"
+      "review": "reviewed"
     },
     {
       "id": "kaxa-6",
@@ -62,7 +62,7 @@
         "eu": "6 abiadurako kaxa: abiadura-taula",
         "es": "Caja de 6 velocidades: tabla de velocidades"
       },
-      "review": "draft"
+      "review": "reviewed"
     },
     {
       "id": "fresagailua",
@@ -71,7 +71,7 @@
         "eu": "Fresagailu osoa (Euskadi 2020)",
         "es": "Fresadora completa (Euskadi 2020)"
       },
-      "review": "draft"
+      "review": "reviewed"
     },
     {
       "id": "zatiketa",
@@ -80,7 +80,7 @@
         "eu": "Plater zatitzailea",
         "es": "Plato divisor"
       },
-      "review": "draft"
+      "review": "reviewed"
     },
     {
       "id": "aldaketa",
@@ -89,7 +89,7 @@
         "eu": "Aldaketa-gurpilak",
         "es": "Ruedas de recambio"
       },
-      "review": "draft"
+      "review": "reviewed"
     },
     {
       "id": "potentzia",
@@ -98,7 +98,7 @@
         "eu": "Potentzia eta momentua katean zehar",
         "es": "Potencia y par a lo largo de la cadena"
       },
-      "review": "draft"
+      "review": "reviewed"
     }
   ]
 }

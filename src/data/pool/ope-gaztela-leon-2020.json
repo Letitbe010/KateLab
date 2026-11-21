@@ -8,7 +8,7 @@
   "sourceNote": "Gaztela eta Leon, 0590-112 azterketa-eredua (EDU/255/2020 agindua, BOCyL 2020-03-06), 1. ariketa, 3. atala (lehen galdera). Nortonen kaxaren 1:2 erlazioa i = 1/2 gisa irakurria (torloju patroiak liraren irteeraren bira erdia), erabiltzaileak erabakia 2026-11-20. \"Varios juegos de ruedas\" bi multzo gisa modelatua (bakoitza bi aldiz): 3/7 erlaziorako ez da gurpil bera bi aldiz baino gehiago behar. Enuntziatuak ez du muntaketa-baldintzarik aipatzen, eta ez da aplikatzen. Roskatze-denbora eta zatitzailearen atalak (K = 60, piezaren planoa behar du) ez daude KateLab-en. Kateko 100 rpm-ak ez daude enuntziatuan (kalkuluan ez du eraginik). Iturria: erabiltzailearen karpetako PDFa.",
   "difficulty": 2,
   "archetype": "aldaketa-gurpilak",
-  "review": "review-needed",
+  "review": "reviewed",
   "chain": {
     "shafts": [
       {

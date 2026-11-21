@@ -113,7 +113,9 @@ describe('pool', () => {
     if (process.env.GEN_POOL) writePinned(resolve(__dirname, '../src/data/pool/generated.json'));
     const stored = JSON.parse(readFileSync(resolve(__dirname, '../src/data/pool/generated.json'), 'utf8')) as { exercises: KinExerciseJSON[] };
     const now = JSON.parse(JSON.stringify(pinnedExercises(), (_k, v) => (typeof v === 'bigint' ? v.toString() : v)));
-    expect(stored.exercises).toEqual(now);
+    // the review status is the teacher's decision (#/berrikusi), not generator output
+    const noReview = (xs: KinExerciseJSON[]) => xs.map((x) => ({ ...x, review: undefined }));
+    expect(noReview(stored.exercises)).toEqual(noReview(now));
     for (const j of stored.exercises) verify(exerciseFromJSON(j));
   });
 });
